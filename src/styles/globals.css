@@ -277,7 +277,7 @@ section {
 .navbar-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
   cursor: none;
 }
@@ -285,24 +285,28 @@ section {
 .navbar-logo-text {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 2px;
   line-height: 1;
 }
 
 .logo-name {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 15px;
+  font-size: 17px;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 .logo-domain {
   font-family: var(--font-display);
-  font-weight: 300;
-  font-size: 10px;
+  font-weight: 400;
+  font-size: 11px;
   color: #6366f1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.04em;
+}
+
+[data-theme='light'] .logo-domain {
+  color: #4f46e5;
 }
 
 /* ---- Responsive ---- */

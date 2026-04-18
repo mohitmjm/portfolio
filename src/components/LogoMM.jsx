@@ -1,4 +1,4 @@
-const LogoMM = ({ size = 36 }) => (
+const LogoMM = ({ size = 40 }) => (
   <svg
     width={size}
     height={size}
@@ -6,30 +6,31 @@ const LogoMM = ({ size = 36 }) => (
     xmlns="http://www.w3.org/2000/svg"
     aria-label="Mohit Mohatkar logo"
   >
-    <rect width="120" height="120" rx="28" fill="#6366f1" />
+    <defs>
+      <linearGradient id="logoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#4f46e5" />
+        <stop offset="100%" stopColor="#0f172a" />
+      </linearGradient>
+    </defs>
+    <rect width="120" height="120" rx="26" fill="url(#logoBg)" />
+    {/* Top M — lavender */}
     <text
-      x="60" y="52"
+      x="60" y="56"
       textAnchor="middle"
       fontFamily="Outfit, sans-serif"
       fontWeight="800"
-      fontSize="38"
-      fill="#ffffff"
+      fontSize="42"
+      fill="#c4b5fd"
     >
       M
     </text>
-    <line
-      x1="28" y1="62"
-      x2="92" y2="62"
-      stroke="#ffffff"
-      strokeWidth="1.5"
-      strokeOpacity="0.35"
-    />
+    {/* Bottom M — cyan */}
     <text
-      x="60" y="84"
+      x="60" y="96"
       textAnchor="middle"
       fontFamily="Outfit, sans-serif"
       fontWeight="800"
-      fontSize="38"
+      fontSize="42"
       fill="#22d3ee"
     >
       M

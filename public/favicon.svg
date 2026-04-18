@@ -3,27 +3,27 @@
   viewBox="0 0 120 120"
   xmlns="http://www.w3.org/2000/svg"
 >
-  <rect width="120" height="120" rx="28" fill="#6366f1"/>
+  <defs>
+    <linearGradient id="logoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="26" fill="url(#logoBg)"/>
   <text
-    x="60" y="52"
+    x="60" y="56"
     text-anchor="middle"
     font-family="Outfit, sans-serif"
     font-weight="800"
-    font-size="38"
-    fill="#ffffff"
+    font-size="42"
+    fill="#c4b5fd"
   >M</text>
-  <line
-    x1="28" y1="62" x2="92" y2="62"
-    stroke="#ffffff"
-    stroke-width="1.5"
-    stroke-opacity="0.35"
-  />
   <text
-    x="60" y="84"
+    x="60" y="96"
     text-anchor="middle"
     font-family="Outfit, sans-serif"
     font-weight="800"
-    font-size="38"
+    font-size="42"
     fill="#22d3ee"
   >M</text>
 </svg>

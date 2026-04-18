@@ -60,7 +60,7 @@ export default function Navbar({ theme, toggleTheme, activeSection }) {
         >
           <LogoMM size={36} />
           <span className="navbar-logo-text">
-            <span className="logo-name">Mohit M.</span>
+            <span className="logo-name">Mohit Mohatkar</span>
             <span className="logo-domain">mohitmohatkar.in</span>
           </span>
         </button>
