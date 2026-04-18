@@ -1,0 +1,45 @@
+export const education = [
+  {
+    id: 1,
+    institution: 'Shri Ramdeobaba College of Engineering & Management',
+    shortName: 'RCOEM, Nagpur',
+    degree: 'B.Tech — Computer Science & Engineering (AI & ML)',
+    period: '2024 – 2027',
+    location: 'Nagpur, Maharashtra',
+    status: 'active',
+    statusLabel: 'Currently Pursuing',
+    logo: '/assets/rcoem.jpeg',
+    color: '#6366f1',
+  },
+  {
+    id: 2,
+    institution: 'Shreeram Vidyalaya, Sonegaon Kalmeshwar',
+    shortName: 'Shreeram Vidyalaya',
+    degree: 'Class XII (Jr. College) — Maharashtra State Board',
+    period: '2023',
+    location: 'Kalmeshwar, Maharashtra',
+    status: 'done',
+    statusLabel: 'Completed',
+    logo: '/assets/shreeram.jpg',
+    color: '#22d3ee',
+  },
+  {
+    id: 3,
+    institution: 'Carmel Academy, Waroda Kalmeshwar',
+    shortName: 'Carmel Academy',
+    degree: 'Class X — CBSE',
+    period: '2021',
+    location: 'Kalmeshwar, Maharashtra',
+    status: 'done',
+    statusLabel: 'Completed',
+    logo: '/assets/carmel.png',
+    color: '#10b981',
+  },
+];
+
+export const certifications = [
+  { icon: '📘', name: 'Machine Learning — Coursera' },
+  { icon: '🧠', name: 'Deep Learning Specialization' },
+  { icon: '🌐', name: 'Full-Stack Web Dev Bootcamp' },
+  { icon: '📊', name: 'Data Science Fundamentals' },
+];

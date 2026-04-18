@@ -1,0 +1,47 @@
+export const experience = [
+  {
+    id: 1,
+    icon: '🤖',
+    title: 'AI/ML Developer',
+    subtitle: 'Drowsiness Detection System',
+    type: 'Self-Driven & Academic',
+    color: '#8b5cf6',
+    colorRgb: '139,92,246',
+    highlights: [
+      'Built a real-time drowsiness detection system using MediaPipe FaceMesh & OpenCV achieving <400ms alert latency',
+      'Implemented Eye Aspect Ratio (EAR) algorithm across 60fps video streams with dynamic calibration',
+      'Exploring deep learning with TensorFlow, PyTorch & Keras for computer vision classification tasks',
+      'Applied data preprocessing and feature engineering pipelines across academic datasets',
+    ],
+  },
+  {
+    id: 2,
+    icon: '🌐',
+    title: 'Full Stack Developer',
+    subtitle: 'HR Portal (Tielo)',
+    type: 'Full-Stack Project',
+    color: '#22d3ee',
+    colorRgb: '34,211,238',
+    highlights: [
+      'Built Tielo — a full-stack HR management portal with Next.js 14, MongoDB Atlas, and Clerk authentication',
+      'Designed a premium Bento Box dashboard UI with glassmorphism, analytics widgets, and leave approval workflows',
+      'Integrated Vercel serverless deployments, CI/CD pipelines, and edge function routing',
+      'Developed REST APIs with Next.js API routes for employee CRUD, role management, and reporting',
+    ],
+  },
+  {
+    id: 3,
+    icon: '📚',
+    title: 'Open Source Contributor',
+    subtitle: '& Continuous Learner',
+    type: 'Continuous Improvement',
+    color: '#fbbf24',
+    colorRgb: '251,191,36',
+    highlights: [
+      'Solving Data Structures & Algorithms problems consistently across LeetCode and Codeforces',
+      'Building and maintaining this personal portfolio to document and share my engineering journey',
+      'Exploring open-source contributions and modern development workflows including Git, GitHub Actions',
+      'Actively seeking internship opportunities in AI/ML, Web Development, and Software Engineering',
+    ],
+  },
+];
