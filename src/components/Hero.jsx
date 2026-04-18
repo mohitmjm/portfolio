@@ -348,11 +348,10 @@ export default function Hero() {
           ref={nameRef}
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(2.4rem, 6vw, 4.2rem)',
+            fontSize: 'clamp(2rem, 8vw, 4.2rem)',
             fontWeight: 900,
             letterSpacing: '-0.02em',
             lineHeight: 1.1,
-            whiteSpace: 'nowrap',
           }}
           initial="hidden"
           animate="visible"
@@ -394,9 +393,19 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1, duration: 0.6 }}
-          style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}
+          className="hero-meta"
+          style={{
+            color: 'var(--text-muted)',
+            fontSize: '0.85rem',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '4px 8px',
+          }}
         >
-          📍 Nagpur, Maharashtra &nbsp;·&nbsp;{' '}
+          <span>📍 Nagpur, Maharashtra</span>
+          <span style={{ opacity: 0.4 }}>·</span>
           <a
             href="mailto:mohitjmohatkar@gmail.com"
             style={{ color: 'var(--accent-primary)', textDecoration: 'underline', textDecorationColor: 'transparent' }}
@@ -412,7 +421,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}
+          style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: 380 }}
         >
           <MagneticButton
             onClick={() => document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })}

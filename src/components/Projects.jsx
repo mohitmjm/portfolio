@@ -424,9 +424,10 @@ export default function Projects() {
         {/* Bento Grid */}
         <motion.div
           layout
+          className="projects-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
             gap: '1.25rem',
           }}
         >

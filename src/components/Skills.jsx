@@ -265,6 +265,7 @@ export default function Skills() {
         {/* Card Grid */}
         <motion.div
           layout
+          className="skills-card-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',

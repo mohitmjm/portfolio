@@ -309,8 +309,91 @@ section {
   color: #4f46e5;
 }
 
-/* ---- Responsive ---- */
+/* ============================================
+   RESPONSIVE — Mobile First
+   ============================================ */
+
+/* ---- Tablet & below (≤ 768px) ---- */
 @media (max-width: 768px) {
   section { padding: 72px 0; }
   .container { padding: 0 16px; }
+  .card { padding: 1.25rem; }
+
+  /* Cursor — hide on touch devices */
+  .cursor-dot,
+  .cursor-ring { display: none; }
+  html, body, a, button { cursor: auto; }
+
+  /* Navbar — hide logo text, keep just icon */
+  .logo-name { font-size: 14px; }
+  .logo-domain { display: none; }
+  .navbar-logo { gap: 8px; }
+
+  /* Buttons — full width stack */
+  .btn-primary,
+  .btn-outline {
+    width: 100%;
+    justify-content: center;
+  }
 }
+
+/* ---- Mobile (≤ 480px) ---- */
+@media (max-width: 480px) {
+  /* Navbar — show only the SVG icon, no text at all */
+  .navbar-logo-text { display: none; }
+
+  /* Hero location + email — stack vertically */
+  .hero-meta {
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+  }
+
+  /* About stats — single row stays 3-col but shrink numbers */
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  .stats-grid .stat-number { font-size: 1.2rem !important; }
+  .stats-grid .stat-label  { font-size: 0.65rem !important; }
+
+  /* Skills — 2 columns min */
+  .skills-card-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Education — badge wraps below info */
+  .edu-card-inner {
+    flex-wrap: wrap;
+  }
+  .edu-badge {
+    align-self: auto;
+    margin-top: 8px;
+  }
+
+  /* Experience — remove deep bullet indent */
+  .exp-bullets {
+    padding-left: 1rem !important;
+  }
+
+  /* Projects — single column */
+  .projects-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Contact links — full width */
+  .contact-links-col,
+  .contact-form-col {
+    min-width: 0;
+  }
+
+  /* Footer socials — wrap 2 per row */
+  .footer-socials {
+    gap: 8px;
+  }
+  .footer-socials a {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+}
+

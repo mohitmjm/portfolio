@@ -114,10 +114,9 @@ function ExperienceCard({ item, index }) {
             style={{ overflow: 'hidden' }}
           >
             <div style={{
-              padding: '0 1.75rem 1.5rem 1.75rem',
-              paddingLeft: `calc(1.75rem + 56px + 1.25rem)`,
+              padding: '0 1.25rem 1.25rem 1.25rem',
             }}>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <ul className="exp-bullets" style={{ display: 'flex', flexDirection: 'column', gap: '10px', paddingLeft: 'calc(56px + 1.25rem)' }}>
                 {item.highlights.map((h, i) => (
                   <motion.li
                     key={i}

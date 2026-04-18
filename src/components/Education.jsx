@@ -50,7 +50,7 @@ export default function Education() {
           viewport={{ once: true, margin: '-60px' }}
           style={{
             position: 'relative',
-            paddingLeft: 40,
+            paddingLeft: 32,
           }}
         >
           {/* Timeline vertical line */}
@@ -89,16 +89,18 @@ export default function Education() {
                     boxShadow: `0 0 30px ${edu.color}30, var(--shadow-sm)`,
                   }}
                   transition={{ duration: 0.2 }}
+                  className="edu-card-inner"
                   style={{
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
                     borderRadius: 'var(--radius-md)',
-                    padding: '1.5rem',
+                    padding: '1.25rem',
                     backdropFilter: 'blur(20px)',
                     display: 'flex',
-                    gap: '1.25rem',
+                    gap: '1rem',
                     alignItems: 'center',
-                    minHeight: 110,
+                    flexWrap: 'wrap',
+                    minHeight: 100,
                     transition: 'border-color 0.25s, box-shadow 0.25s',
                     position: 'relative',
                     overflow: 'hidden',
@@ -164,7 +166,7 @@ export default function Education() {
                   </div>
 
                   {/* Badge */}
-                  <span style={{
+                  <span className="edu-badge" style={{
                     flexShrink: 0,
                     padding: '4px 12px',
                     borderRadius: 20,

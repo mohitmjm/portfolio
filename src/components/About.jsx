@@ -69,7 +69,7 @@ export default function About() {
             </p>
 
             {/* Stats */}
-            <div style={{
+            <div className="stats-grid" style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
               gap: '1rem',
@@ -86,7 +86,7 @@ export default function About() {
                     textAlign: 'center',
                   }}
                 >
-                  <div style={{
+                  <div className="stat-number" style={{
                     fontFamily: 'var(--font-display)',
                     fontSize: '1.6rem',
                     fontWeight: 800,
@@ -97,7 +97,7 @@ export default function About() {
                   }}>
                     {s.number}
                   </div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                  <div className="stat-label" style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '4px' }}>
                     {s.label}
                   </div>
                 </div>
