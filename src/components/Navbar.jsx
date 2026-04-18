@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import LogoMM from './LogoMM';
 
 const navLinks = [
   { label: 'About', href: '#about' },
@@ -54,19 +55,14 @@ export default function Navbar({ theme, toggleTheme, activeSection }) {
         {/* Brand */}
         <button
           onClick={() => scrollTo('#hero')}
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 800,
-            fontSize: '1.2rem',
-            background: 'var(--gradient-text)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            border: 'none',
-            cursor: 'none',
-          }}
+          className="navbar-logo"
+          style={{ background: 'none', border: 'none', padding: 0 }}
         >
-          mohitmohatkar.in
+          <LogoMM size={36} />
+          <span className="navbar-logo-text">
+            <span className="logo-name">Mohit M.</span>
+            <span className="logo-domain">mohitmohatkar.in</span>
+          </span>
         </button>
 
         {/* Desktop Links */}

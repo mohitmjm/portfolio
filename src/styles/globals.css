@@ -273,6 +273,38 @@ section {
   margin: 1rem 0 2rem;
 }
 
+/* ---- Navbar Logo ---- */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  cursor: none;
+}
+
+.navbar-logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  line-height: 1;
+}
+
+.logo-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.logo-domain {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 10px;
+  color: #6366f1;
+  letter-spacing: 0.1em;
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
   section { padding: 72px 0; }
