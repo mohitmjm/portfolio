@@ -5,7 +5,7 @@ import { projects } from '../data/projects';
 const categories = ['All', 'AI/ML', 'Web'];
 
 /* ── 3D Tilt Card ─────────────────────────────────────────────────────────── */
-function ProjectCard({ project, onOpen, featured }) {
+function ProjectCard({ project, onOpen, onOpenReport, featured }) {
   const cardRef  = useRef(null);
   const shineRef = useRef(null);
 
@@ -75,9 +75,10 @@ function ProjectCard({ project, onOpen, featured }) {
           willChange: 'transform',
           transition: 'border-color 0.25s, box-shadow 0.25s',
           height: '100%',
-          display: featured ? 'flex' : 'block',
+          display: 'flex',
+          flexDirection: featured ? 'row' : 'column',
           gap: featured ? '2rem' : 0,
-          alignItems: featured ? 'center' : 'initial',
+          alignItems: featured ? 'center' : 'stretch',
         }}
       >
         {/* Shine */}
@@ -112,7 +113,7 @@ function ProjectCard({ project, onOpen, featured }) {
           {project.emoji}
         </div>
 
-        <div style={{ flex: 1, position: 'relative', zIndex: 2 }}>
+        <div style={{ flex: 1, position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column' }}>
           {/* Category badge */}
           <span style={{
             display: 'inline-block',
@@ -152,11 +153,56 @@ function ProjectCard({ project, onOpen, featured }) {
           </div>
 
           <div style={{
-            marginTop: '1rem',
-            fontSize: '0.7rem', color: 'var(--accent-primary)',
+            marginTop: 'auto',
+            paddingTop: '1.25rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontSize: '0.7rem',
             fontFamily: 'var(--font-mono)',
           }}>
-            [click to expand →]
+            <span style={{ color: 'var(--text-muted)' }}>[click to expand →]</span>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {project.report && (
+                <button 
+                  onClick={(e) => { e.stopPropagation(); onOpenReport(project.report); }}
+                  style={{
+                    color: 'var(--text-primary)',
+                    fontWeight: 600,
+                    padding: '6px 14px',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    background: 'rgba(255,255,255,0.05)',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    fontSize: 'inherit'
+                  }}
+                >
+                  📄 Report
+                </button>
+              )}
+              {project.demo && (
+                <a 
+                  href={project.demo} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    color: '#fff',
+                    fontWeight: 800,
+                    textDecoration: 'none',
+                    padding: '6px 14px',
+                    border: 'none',
+                    borderRadius: '8px',
+                    background: 'var(--accent-primary)',
+                    boxShadow: '0 4px 14px rgba(59,130,246,0.35)',
+                    letterSpacing: '0.5px'
+                  }}
+                >
+                  🔥 OPEN LIVE APP
+                </a>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -220,7 +266,7 @@ function ComingSoonCard() {
 }
 
 /* ── Project Modal ────────────────────────────────────────────────────────── */
-function ProjectModal({ project, onClose }) {
+function ProjectModal({ project, onClose, onOpenReport }) {
   const catColor = project?.category === 'AI/ML'
     ? { bg: 'rgba(167,139,250,0.14)', color: 'var(--accent-violet)', border: 'rgba(167,139,250,0.28)' }
     : { bg: 'rgba(6,182,212,0.12)',   color: 'var(--accent-cyan)',   border: 'rgba(6,182,212,0.22)'   };
@@ -242,13 +288,12 @@ function ProjectModal({ project, onClose }) {
           />
           <motion.div
             key="modal"
-            initial={{ opacity: 0, scale: 0.85, y: 40 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.85, y: 40 }}
+            initial={{ opacity: 0, scale: 0.85, x: "-50%", y: "calc(-50% + 40px)" }}
+            animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
+            exit={{ opacity: 0, scale: 0.85, x: "-50%", y: "calc(-50% + 40px)" }}
             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
             style={{
               position: 'fixed', top: '50%', left: '50%',
-              transform: 'translate(-50%, -50%)',
               zIndex: 2001,
               width: 'min(600px, 92vw)',
               maxHeight: '85vh', overflowY: 'auto',
@@ -305,6 +350,11 @@ function ProjectModal({ project, onClose }) {
                   ⌥ View GitHub
                 </a>
               )}
+              {project.report && (
+                <button onClick={() => onOpenReport(project.report)} className="btn-outline" style={{ background: 'rgba(255,255,255,0.05)', cursor: 'pointer', fontFamily: 'inherit' }}>
+                  📄 View Report
+                </button>
+              )}
               {project.demo && (
                 <a href={project.demo} target="_blank" rel="noopener noreferrer" className="btn-primary">
                   🌐 Live Demo
@@ -322,6 +372,7 @@ function ProjectModal({ project, onClose }) {
 export default function Projects() {
   const [activeFilter,     setActiveFilter]     = useState('All');
   const [selectedProject,  setSelectedProject]  = useState(null);
+  const [activeReport,     setActiveReport]     = useState(null);
 
   const filtered = activeFilter === 'All'
     ? projects
@@ -401,7 +452,8 @@ export default function Projects() {
                 key={project.id}
                 project={project}
                 onOpen={setSelectedProject}
-                featured={project.id === firstFeaturedId}
+                onOpenReport={setActiveReport}
+                featured={false}
               />
             ))}
             <ComingSoonCard key="coming-soon" />
@@ -409,7 +461,55 @@ export default function Projects() {
         </motion.div>
       </div>
 
-      <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+      <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} onOpenReport={setActiveReport} />
+      <ReportModal report={activeReport} onClose={() => setActiveReport(null)} />
     </section>
+  );
+}
+
+/* ── Report Modal ─────────────────────────────────────────────────────────── */
+function ReportModal({ report, onClose }) {
+  return (
+    <AnimatePresence>
+      {report && (
+        <>
+          <motion.div
+            key="backdrop-report"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={onClose}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 9999,
+              background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)',
+            }}
+          />
+          <motion.div
+            key="modal-report"
+            initial={{ opacity: 0, scale: 0.95, x: "-50%", y: "calc(-50% + 20px)" }}
+            animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
+            exit={{ opacity: 0, scale: 0.95, x: "-50%", y: "calc(-50% + 20px)" }}
+            style={{
+              position: 'fixed',
+              top: '50%', left: '50%',
+              width: '90%', maxWidth: '1000px', height: '90vh',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-lg)',
+              zIndex: 10000,
+              display: 'flex', flexDirection: 'column',
+              overflow: 'hidden',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border)', background: 'var(--bg-dark)' }}>
+              <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--text-primary)' }}>
+                📄 Document Viewer
+              </h3>
+              <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '1.2rem', padding: '4px' }}>✕</button>
+            </div>
+            <iframe src={`${report}#view=FitH&toolbar=0`} style={{ flex: 1, width: '100%', height: '100%', border: 'none', background: '#e5e7eb' }} title="Report Viewer" />
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }

@@ -15,6 +15,7 @@ export const skills = [
   { id: 9, name: 'TensorFlow', icon: '🔷', category: 'AI/ML', proficiency: 'Beginner', note: 'Deep learning, computer vision basics' },
   { id: 10, name: 'OpenCV', icon: '👁️', category: 'AI/ML', proficiency: 'Intermediate', note: 'Real-time video, image processing' },
   { id: 11, name: 'MediaPipe', icon: '💡', category: 'AI/ML', proficiency: 'Intermediate', note: 'FaceMesh, pose, hands tracking' },
+  { id: 15, name: 'NLP', icon: '🗣️', category: 'AI/ML', proficiency: 'Intermediate', note: 'TF-IDF, cosine similarity, text parsing' },
 
   // Tools
   { id: 12, name: 'Git & GitHub', icon: '🐙', category: 'Tools', proficiency: 'Advanced', note: 'Version control, collaboration, CI/CD' },

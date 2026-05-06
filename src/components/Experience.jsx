@@ -181,14 +181,13 @@ export default function Experience() {
             fontSize: 'clamp(1.8rem, 4vw, 2.6rem)',
             fontWeight: 800, marginTop: '0.5rem',
           }}>
-            What I've{' '}
             <span style={{
               background: 'var(--gradient-text)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
             }}>
-              Built &amp; Learned
+              Experience
             </span>
           </h2>
           <div className="section-divider" style={{ margin: '1rem auto 0' }} />
