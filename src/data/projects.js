@@ -5,7 +5,7 @@ export const projects = [
     title: 'Smart HR Portal with Predictive Analysis',
     shortDesc: 'A comprehensive HR management system integrating predictive analytics to optimize workforce planning and employee retention. (In Progress - Almost Complete)',
     longDesc: 'A collaborative group project focused on building a modern, data-driven HR platform. It combines core HR functionalities with advanced predictive analysis models to forecast employee attrition, performance trends, and recruitment needs. The portal provides actionable insights to HR teams, helping them make informed, strategic decisions to improve overall workforce efficiency.',
-    tags: ['React', 'Machine Learning', 'Predictive Analysis', 'HRMS', 'In Progress'],
+    tags: ['Next.js 14', 'TypeScript', 'Tailwind CSS', 'Clerk Auth', 'Framer Motion', 'Machine Learning', 'Predictive Analysis', 'HRMS'],
     category: 'Full-Stack',
     github: 'https://github.com/Team-Innovatrix/Smart-HR-protal',
     report: '/assets/Hr_Portal.pdf',
