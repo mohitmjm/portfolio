@@ -2,34 +2,55 @@ import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { skills, skillCategories } from '../data/skills';
 
-// ── 3D Flip Card ─────────────────────────────────────────────────────────────
+/* ── Progress Bar (used on card back) ────────────────────────────────────── */
+const proficiencyMap = { Advanced: 90, Intermediate: 60, Beginner: 30 };
+const proficiencyColor = {
+  Advanced:     'var(--accent-primary)',
+  Intermediate: 'var(--accent-cyan)',
+  Beginner:     'var(--accent-warm)',
+};
+
+function ProgressBar({ value, color }) {
+  return (
+    <div style={{
+      width: '80%', height: 4,
+      background: 'rgba(255,255,255,0.08)',
+      borderRadius: 4, overflow: 'hidden',
+    }}>
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: `${value}%` }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+        style={{ height: '100%', background: color, borderRadius: 4, boxShadow: `0 0 8px ${color}` }}
+      />
+    </div>
+  );
+}
+
+/* ── 3D Flip Card ─────────────────────────────────────────────────────────── */
 function SkillCard({ skill, index }) {
-  const cardRef = useRef(null);
+  const cardRef  = useRef(null);
   const shineRef = useRef(null);
   const [flipped, setFlipped] = useState(false);
 
-  const proficiencyColor = {
-    'Advanced': 'var(--accent-green)',
-    'Intermediate': 'var(--accent-cyan)',
-    'Beginner': 'var(--accent-warm)',
-  }[skill.proficiency] || 'var(--accent-primary)';
+  const pcol = proficiencyColor[skill.proficiency] || 'var(--accent-primary)';
+  const pval = proficiencyMap[skill.proficiency]   || 50;
 
   const handleMouseMove = useCallback((e) => {
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = (e.clientX - cx) / (rect.width / 2);
-    const dy = (e.clientY - cy) / (rect.height / 2);
+    const cx   = rect.left + rect.width  / 2;
+    const cy   = rect.top  + rect.height / 2;
+    const dx   = (e.clientX - cx) / (rect.width  / 2);
+    const dy   = (e.clientY - cy) / (rect.height / 2);
     card.style.setProperty('--rotX', `${-dy * 10}deg`);
-    card.style.setProperty('--rotY', `${dx * 10}deg`);
-
+    card.style.setProperty('--rotY', `${dx  * 10}deg`);
     if (shineRef.current) {
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      shineRef.current.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.15), transparent 60%)`;
-      shineRef.current.style.opacity = 1;
+      const x = ((e.clientX - rect.left) / rect.width)  * 100;
+      const y = ((e.clientY - rect.top)  / rect.height) * 100;
+      shineRef.current.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(129,140,248,0.14), transparent 60%)`;
+      shineRef.current.style.opacity    = 1;
     }
   }, []);
 
@@ -58,112 +79,90 @@ function SkillCard({ skill, index }) {
         onClick={() => setFlipped(f => !f)}
         style={{
           position: 'relative',
-          width: '100%',
-          aspectRatio: '1.1',
+          width: '100%', aspectRatio: '1.1',
           transformStyle: 'preserve-3d',
-          transform: `perspective(600px) rotateX(var(--rotX, 0deg)) rotateY(${flipped ? '180deg' : 'var(--rotY, 0deg)'}`,
+          transform: `perspective(600px) rotateX(var(--rotX, 0deg)) rotateY(${flipped ? '180deg' : 'var(--rotY, 0deg)'})`,
           transition: flipped ? 'transform 0.55s cubic-bezier(0.23,1,0.32,1)' : 'transform 0.08s linear',
           cursor: 'none',
-          '--rotX': '0deg',
-          '--rotY': '0deg',
+          '--rotX': '0deg', '--rotY': '0deg',
         }}
       >
         {/* Front */}
         <div style={{
-          position: 'absolute',
-          inset: 0,
+          position: 'absolute', inset: 0,
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
           background: 'var(--bg-card)',
           border: '1px solid var(--border)',
           borderRadius: 'var(--radius-md)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '10px',
-          padding: '1rem',
-          backdropFilter: 'blur(20px)',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          gap: '10px', padding: '1rem',
+          backdropFilter: 'blur(24px)',
           overflow: 'hidden',
+          transition: 'border-color 0.25s, box-shadow 0.25s',
         }}>
           <div ref={shineRef} style={{
-            position: 'absolute',
-            inset: 0,
-            opacity: 0,
-            pointerEvents: 'none',
-            borderRadius: 'var(--radius-md)',
+            position: 'absolute', inset: 0, opacity: 0,
+            pointerEvents: 'none', borderRadius: 'var(--radius-md)',
             transition: 'opacity 0.2s',
           }} />
           <div style={{ fontSize: '2.2rem', lineHeight: 1 }}>{skill.icon}</div>
           <div style={{
             fontFamily: 'var(--font-display)',
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            color: 'var(--text-primary)',
-            textAlign: 'center',
+            fontWeight: 700, fontSize: '0.9rem',
+            color: 'var(--text-primary)', textAlign: 'center',
           }}>
             {skill.name}
           </div>
           <span style={{
-            fontSize: '0.68rem',
-            padding: '2px 8px',
+            fontSize: '0.65rem', padding: '2px 8px',
             borderRadius: 10,
-            background: 'rgba(99,102,241,0.12)',
+            background: 'rgba(59,130,246,0.1)',
             color: 'var(--accent-primary)',
-            border: '1px solid rgba(99,102,241,0.2)',
+            border: '1px solid rgba(59,130,246,0.2)',
+            fontFamily: 'var(--font-mono)',
           }}>
             {skill.category}
           </span>
           <span style={{
-            position: 'absolute',
-            bottom: 8,
-            fontSize: '0.6rem',
-            color: 'var(--text-muted)',
+            position: 'absolute', bottom: 8,
+            fontSize: '0.58rem', color: 'var(--text-muted)',
+            fontFamily: 'var(--font-mono)',
           }}>
-            click to flip
+            [click to flip]
           </span>
         </div>
 
         {/* Back */}
         <div style={{
-          position: 'absolute',
-          inset: 0,
+          position: 'absolute', inset: 0,
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
           transform: 'rotateY(180deg)',
-          background: 'linear-gradient(135deg, rgba(99,102,241,0.18), rgba(139,92,246,0.1))',
+          background: 'linear-gradient(135deg, rgba(59,130,246,0.16), rgba(129,140,248,0.08))',
           border: '1px solid var(--border-glow)',
           borderRadius: 'var(--radius-md)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '10px',
-          padding: '1rem',
-          textAlign: 'center',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          gap: '10px', padding: '1rem', textAlign: 'center',
         }}>
           <div style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.7rem',
+            fontFamily: 'var(--font-mono)', fontSize: '0.68rem',
             color: 'var(--text-muted)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
+            textTransform: 'uppercase', letterSpacing: '0.1em',
           }}>
             Proficiency
           </div>
           <div style={{
             fontFamily: 'var(--font-display)',
-            fontWeight: 800,
-            fontSize: '1.15rem',
-            color: proficiencyColor,
+            fontWeight: 800, fontSize: '1.1rem',
+            color: pcol,
           }}>
             {skill.proficiency}
           </div>
-          <div style={{
-            fontSize: '0.75rem',
-            color: 'var(--text-secondary)',
-            lineHeight: 1.5,
-          }}>
+          <ProgressBar value={pval} color={pcol} />
+          <div style={{ fontSize: '0.73rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
             {skill.note}
           </div>
         </div>
@@ -172,7 +171,7 @@ function SkillCard({ skill, index }) {
   );
 }
 
-// ── Skills Section ────────────────────────────────────────────────────────────
+/* ── Skills Section ───────────────────────────────────────────────────────── */
 export default function Skills() {
   const [activeFilter, setActiveFilter] = useState('All');
 
@@ -180,24 +179,28 @@ export default function Skills() {
     ? skills
     : skills.filter(s => s.category === activeFilter);
 
+  // Category summary counts
+  const counts = {};
+  skills.forEach(s => { counts[s.category] = (counts[s.category] || 0) + 1; });
+
   return (
-    <section id="skills" style={{ paddingTop: 96, paddingBottom: 96, background: 'rgba(99,102,241,0.02)' }}>
+    <section id="skills" style={{ paddingTop: 96, paddingBottom: 96, background: 'rgba(59,130,246,0.015)' }}>
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          style={{ textAlign: 'center', marginBottom: '3rem' }}
+          style={{ textAlign: 'center', marginBottom: '2rem' }}
         >
+
           <span className="section-label">Tech Stack</span>
           <h2 style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(1.8rem, 4vw, 2.6rem)',
-            fontWeight: 800,
-            marginTop: '0.5rem',
+            fontWeight: 800, marginTop: '0.5rem',
           }}>
-            Skills &{' '}
+            Skills &amp;{' '}
             <span style={{
               background: 'var(--gradient-text)',
               WebkitBackgroundClip: 'text',
@@ -210,6 +213,32 @@ export default function Skills() {
           <div className="section-divider" style={{ margin: '1rem auto 0' }} />
         </motion.div>
 
+        {/* Category summary row */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          style={{
+            display: 'flex', flexWrap: 'wrap',
+            justifyContent: 'center', gap: '8px',
+            marginBottom: '1.75rem',
+          }}
+        >
+          {Object.entries(counts).map(([cat, n]) => (
+            <span key={cat} style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.68rem',
+              color: 'var(--text-muted)',
+              padding: '3px 10px',
+              border: '1px solid var(--border)',
+              borderRadius: 20,
+            }}>
+              {n} {cat}
+            </span>
+          ))}
+        </motion.div>
+
         {/* Filter Tabs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -217,10 +246,8 @@ export default function Skills() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
           style={{
-            display: 'flex',
-            gap: '8px',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
+            display: 'flex', gap: '8px',
+            flexWrap: 'wrap', justifyContent: 'center',
             marginBottom: '2.5rem',
           }}
         >
@@ -229,31 +256,30 @@ export default function Skills() {
               key={cat}
               onClick={() => setActiveFilter(cat)}
               style={{
-                padding: '8px 20px',
-                borderRadius: '20px',
+                padding: '8px 20px', borderRadius: '20px',
                 border: activeFilter === cat
                   ? '1px solid var(--accent-primary)'
                   : '1px solid var(--border)',
                 background: activeFilter === cat
-                  ? 'rgba(99,102,241,0.2)'
-                  : 'transparent',
+                  ? 'rgba(59,130,246,0.18)' : 'transparent',
                 color: activeFilter === cat ? 'var(--accent-primary)' : 'var(--text-secondary)',
                 fontFamily: 'var(--font-sans)',
                 fontSize: '0.85rem',
                 fontWeight: activeFilter === cat ? 600 : 400,
                 cursor: 'none',
                 transition: 'all 0.2s ease',
+                boxShadow: activeFilter === cat ? '0 0 14px rgba(59,130,246,0.15)' : 'none',
               }}
               onMouseEnter={e => {
                 if (activeFilter !== cat) {
                   e.currentTarget.style.borderColor = 'var(--border-glow)';
-                  e.currentTarget.style.color = 'var(--text-primary)';
+                  e.currentTarget.style.color       = 'var(--text-primary)';
                 }
               }}
               onMouseLeave={e => {
                 if (activeFilter !== cat) {
                   e.currentTarget.style.borderColor = 'var(--border)';
-                  e.currentTarget.style.color = 'var(--text-secondary)';
+                  e.currentTarget.style.color       = 'var(--text-secondary)';
                 }
               }}
             >
@@ -279,9 +305,7 @@ export default function Skills() {
           </AnimatePresence>
         </motion.div>
 
-        <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.78rem', marginTop: '1.5rem' }}>
-          Click any card to flip and see proficiency level
-        </p>
+
       </div>
     </section>
   );

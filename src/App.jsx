@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from './hooks/useTheme';
+import './styles/globals.css';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -10,10 +12,11 @@ import Projects from './components/Projects';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
+/* ── Custom Cursor ─────────────────────────────────────────────────────────── */
 function CustomCursor() {
-  const dotRef = useRef(null);
+  const dotRef  = useRef(null);
   const ringRef = useRef(null);
-  const pos = useRef({ x: 0, y: 0 });
+  const pos     = useRef({ x: 0, y: 0 });
   const ringPos = useRef({ x: 0, y: 0 });
   const [hovering, setHovering] = useState(false);
   const rafRef = useRef(null);
@@ -23,18 +26,17 @@ function CustomCursor() {
       pos.current = { x: e.clientX, y: e.clientY };
       if (dotRef.current) {
         dotRef.current.style.left = e.clientX + 'px';
-        dotRef.current.style.top = e.clientY + 'px';
+        dotRef.current.style.top  = e.clientY + 'px';
       }
     };
 
     const lerp = (a, b, t) => a + (b - a) * t;
-
     const animate = () => {
       ringPos.current.x = lerp(ringPos.current.x, pos.current.x, 0.12);
       ringPos.current.y = lerp(ringPos.current.y, pos.current.y, 0.12);
       if (ringRef.current) {
         ringRef.current.style.left = ringPos.current.x + 'px';
-        ringRef.current.style.top = ringPos.current.y + 'px';
+        ringRef.current.style.top  = ringPos.current.y + 'px';
       }
       rafRef.current = requestAnimationFrame(animate);
     };
@@ -49,7 +51,6 @@ function CustomCursor() {
     });
 
     rafRef.current = requestAnimationFrame(animate);
-
     return () => {
       document.removeEventListener('mousemove', onMove);
       cancelAnimationFrame(rafRef.current);
@@ -58,21 +59,74 @@ function CustomCursor() {
 
   return (
     <>
-      <div ref={dotRef} className="cursor-dot" />
+      <div ref={dotRef}  className="cursor-dot" />
       <div ref={ringRef} className={`cursor-ring ${hovering ? 'hovering' : ''}`} />
     </>
   );
 }
 
+/* ── Scroll Progress Bar ───────────────────────────────────────────────────── */
+function ScrollProgressBar() {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el  = document.documentElement;
+      const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+      setWidth(Math.min(pct, 100));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return <div className="scroll-progress" style={{ width: `${width}%` }} />;
+}
+
+/* ── Page Load Overlay ─────────────────────────────────────────────────────── */
+function PageLoadOverlay() {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(false), 1300);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          className="page-load-overlay"
+          key="overlay"
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0, y: '-4%' }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="page-load-logo">MM_</div>
+          <div className="page-load-bar">
+            <div className="page-load-bar-fill" />
+          </div>
+          <div style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.65rem',
+            color: 'var(--text-muted)',
+            letterSpacing: '0.15em',
+          }}>
+            INITIALIZING...
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ── App ───────────────────────────────────────────────────────────────────── */
 export default function App() {
   const { theme, toggleTheme } = useTheme();
   const [activeSection, setActiveSection] = useState('hero');
   const mouse = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    const handleMouse = (e) => {
-      mouse.current = { x: e.clientX, y: e.clientY };
-    };
+    const handleMouse = (e) => { mouse.current = { x: e.clientX, y: e.clientY }; };
     window.addEventListener('mousemove', handleMouse);
     return () => window.removeEventListener('mousemove', handleMouse);
   }, []);
@@ -82,12 +136,10 @@ export default function App() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
         });
       },
-      { threshold: 0.4 }
+      { threshold: 0.35 }
     );
     sections.forEach(s => observer.observe(s));
     return () => observer.disconnect();
@@ -95,6 +147,8 @@ export default function App() {
 
   return (
     <>
+      <PageLoadOverlay />
+      <ScrollProgressBar />
       <CustomCursor />
       <Navbar theme={theme} toggleTheme={toggleTheme} activeSection={activeSection} />
       <main>

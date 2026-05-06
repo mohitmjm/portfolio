@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion';
+import { FiGithub, FiLinkedin, FiInstagram, FiMail } from 'react-icons/fi';
 
 export default function Footer() {
   const year = new Date().getFullYear();
 
   const socials = [
-    { label: 'GitHub', href: 'https://github.com/mohitmohatkar', icon: '🐙' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mohit-mohatkar', icon: '🔗' },
-    { label: 'Instagram', href: 'https://www.instagram.com/mohitmohatkar/', icon: '📸' },
-    { label: 'Email', href: 'mailto:mohitjmohatkar@gmail.com', icon: '📧' },
+    { label: 'GitHub',    href: 'https://github.com/mohitmjm',                icon: FiGithub },
+    { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/mohit-mohatkar', icon: FiLinkedin },
+    { label: 'Instagram', href: 'https://www.instagram.com/mohitmohatkar/',   icon: FiInstagram },
+    { label: 'Email',     href: 'mailto:mohitjmohatkar@gmail.com',            icon: FiMail },
   ];
 
   return (
@@ -45,21 +46,22 @@ export default function Footer() {
 
           {/* Tagline */}
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-            B.Tech CSE (AI & ML) · Full Stack Developer · Always building something new.
+            B.Tech CSE (AI &amp; ML) · Full Stack Developer · Always building something new.
           </p>
 
           {/* Socials */}
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div className="footer-socials" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
             {socials.map(s => (
               <a
                 key={s.label}
                 href={s.href}
                 target={s.href.startsWith('mailto') ? '_self' : '_blank'}
                 rel="noopener noreferrer"
+                title={s.label}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
+                  gap: '7px',
                   padding: '8px 16px',
                   borderRadius: '20px',
                   border: '1px solid var(--border)',
@@ -67,21 +69,23 @@ export default function Footer() {
                   color: 'var(--text-secondary)',
                   fontSize: '0.82rem',
                   fontWeight: 500,
-                  transition: 'border-color 0.2s, color 0.2s, background 0.2s',
+                  transition: 'border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s',
                   backdropFilter: 'blur(12px)',
                 }}
                 onMouseEnter={e => {
                   e.currentTarget.style.borderColor = 'var(--border-glow)';
-                  e.currentTarget.style.color = 'var(--text-primary)';
-                  e.currentTarget.style.background = 'rgba(99,102,241,0.08)';
+                  e.currentTarget.style.color       = 'var(--text-primary)';
+                  e.currentTarget.style.background  = 'rgba(59,130,246,0.08)';
+                  e.currentTarget.style.boxShadow   = '0 0 12px rgba(59,130,246,0.15)';
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.borderColor = 'var(--border)';
-                  e.currentTarget.style.color = 'var(--text-secondary)';
-                  e.currentTarget.style.background = 'var(--bg-card)';
+                  e.currentTarget.style.color       = 'var(--text-secondary)';
+                  e.currentTarget.style.background  = 'var(--bg-card)';
+                  e.currentTarget.style.boxShadow   = 'none';
                 }}
               >
-                {s.icon} {s.label}
+                <s.icon size={15} /> {s.label}
               </a>
             ))}
           </div>

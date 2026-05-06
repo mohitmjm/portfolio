@@ -4,35 +4,35 @@ import { projects } from '../data/projects';
 
 const categories = ['All', 'AI/ML', 'Web'];
 
-// ── 3D Tilt Card ──────────────────────────────────────────────────────────────
-function ProjectCard({ project, onOpen }) {
-  const cardRef = useRef(null);
+/* ── 3D Tilt Card ─────────────────────────────────────────────────────────── */
+function ProjectCard({ project, onOpen, featured }) {
+  const cardRef  = useRef(null);
   const shineRef = useRef(null);
 
   const handleMouseMove = useCallback((e) => {
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = (e.clientX - cx) / (rect.width / 2);
-    const dy = (e.clientY - cy) / (rect.height / 2);
-    card.style.transform = `perspective(700px) rotateX(${-dy * 8}deg) rotateY(${dx * 8}deg) translateY(-4px)`;
+    const cx   = rect.left + rect.width  / 2;
+    const cy   = rect.top  + rect.height / 2;
+    const dx   = (e.clientX - cx) / (rect.width  / 2);
+    const dy   = (e.clientY - cy) / (rect.height / 2);
+    card.style.transform = `perspective(700px) rotateX(${-dy * 7}deg) rotateY(${dx * 7}deg) translateY(-4px)`;
     if (shineRef.current) {
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      shineRef.current.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.12), transparent 60%)`;
-      shineRef.current.style.opacity = 1;
+      const x = ((e.clientX - rect.left) / rect.width)  * 100;
+      const y = ((e.clientY - rect.top)  / rect.height) * 100;
+      shineRef.current.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(129,140,248,0.12), transparent 60%)`;
+      shineRef.current.style.opacity    = 1;
     }
   }, []);
 
   const handleMouseLeave = useCallback(() => {
     const card = cardRef.current;
     if (card) {
-      card.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+      card.style.transform  = 'perspective(700px) rotateX(0deg) rotateY(0deg) translateY(0px)';
       card.style.transition = 'transform 0.5s cubic-bezier(0.23,1,0.32,1)';
       card.style.borderColor = 'var(--border)';
-      card.style.boxShadow = 'none';
+      card.style.boxShadow   = 'none';
       setTimeout(() => { if (card) card.style.transition = ''; }, 500);
     }
     if (shineRef.current) shineRef.current.style.opacity = 0;
@@ -42,9 +42,13 @@ function ProjectCard({ project, onOpen }) {
     const card = cardRef.current;
     if (card) {
       card.style.borderColor = 'var(--border-glow)';
-      card.style.boxShadow = 'var(--shadow-glow)';
+      card.style.boxShadow   = 'var(--shadow-glow)';
     }
   }, []);
+
+  const catColor  = project.category === 'AI/ML'
+    ? { bg: 'rgba(167,139,250,0.14)', color: 'var(--accent-violet)', border: 'rgba(167,139,250,0.28)' }
+    : { bg: 'rgba(6,182,212,0.12)',   color: 'var(--accent-cyan)',   border: 'rgba(6,182,212,0.22)'   };
 
   return (
     <motion.div
@@ -54,7 +58,7 @@ function ProjectCard({ project, onOpen }) {
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       onClick={() => onOpen(project)}
-      style={{ cursor: 'none' }}
+      style={{ cursor: 'none', gridColumn: featured ? 'span 2' : 'span 1' }}
     >
       <div
         ref={cardRef}
@@ -65,158 +69,147 @@ function ProjectCard({ project, onOpen }) {
           background: 'var(--bg-card)',
           border: '1px solid var(--border)',
           borderRadius: 'var(--radius-lg)',
-          padding: '1.75rem',
-          backdropFilter: 'blur(20px)',
-          position: 'relative',
-          overflow: 'hidden',
+          padding: featured ? '2.25rem' : '1.75rem',
+          backdropFilter: 'blur(24px)',
+          position: 'relative', overflow: 'hidden',
           willChange: 'transform',
           transition: 'border-color 0.25s, box-shadow 0.25s',
           height: '100%',
+          display: featured ? 'flex' : 'block',
+          gap: featured ? '2rem' : 0,
+          alignItems: featured ? 'center' : 'initial',
         }}
       >
-        {/* Shine overlay */}
+        {/* Shine */}
         <div ref={shineRef} style={{
-          position: 'absolute',
-          inset: 0,
-          opacity: 0,
-          pointerEvents: 'none',
-          borderRadius: 'var(--radius-lg)',
-          transition: 'opacity 0.2s',
-          zIndex: 1,
+          position: 'absolute', inset: 0, opacity: 0,
+          pointerEvents: 'none', borderRadius: 'var(--radius-lg)',
+          transition: 'opacity 0.2s', zIndex: 1,
         }} />
 
-        {/* Category badge */}
-        <span style={{
-          display: 'inline-block',
-          padding: '3px 10px',
-          borderRadius: 20,
-          fontSize: '0.68rem',
-          fontWeight: 600,
-          background: project.category === 'AI/ML' ? 'rgba(139,92,246,0.15)' : 'rgba(34,211,238,0.12)',
-          color: project.category === 'AI/ML' ? 'var(--accent-violet)' : 'var(--accent-cyan)',
-          border: project.category === 'AI/ML' ? '1px solid rgba(139,92,246,0.25)' : '1px solid rgba(34,211,238,0.2)',
-          marginBottom: '1rem',
-          position: 'relative',
-          zIndex: 2,
-        }}>
-          {project.category}
-        </span>
+        {/* "NEW" badge */}
+        {project.id === Math.max(...projects.map(p => p.id)) && (
+          <span style={{
+            position: 'absolute', top: 16, right: 16,
+            padding: '2px 10px', borderRadius: 20,
+            fontSize: '0.62rem', fontWeight: 700,
+            background: 'rgba(59,130,246,0.18)',
+            color: 'var(--accent-primary)',
+            border: '1px solid rgba(59,130,246,0.35)',
+            fontFamily: 'var(--font-mono)',
+            zIndex: 2,
+            boxShadow: '0 0 10px rgba(59,130,246,0.2)',
+          }}>NEW</span>
+        )}
 
-        <div style={{ fontSize: '2.4rem', marginBottom: '0.75rem', position: 'relative', zIndex: 2 }}>
+        {/* Featured big emoji */}
+        <div style={{
+          fontSize: featured ? '4rem' : '2.4rem',
+          marginBottom: featured ? 0 : '0.75rem',
+          position: 'relative', zIndex: 2,
+          flexShrink: 0,
+        }}>
           {project.emoji}
         </div>
 
-        <h3 style={{
-          fontFamily: 'var(--font-display)',
-          fontWeight: 700,
-          fontSize: '1.1rem',
-          marginBottom: '0.75rem',
-          color: 'var(--text-primary)',
-          position: 'relative',
-          zIndex: 2,
-        }}>
-          {project.title}
-        </h3>
+        <div style={{ flex: 1, position: 'relative', zIndex: 2 }}>
+          {/* Category badge */}
+          <span style={{
+            display: 'inline-block',
+            padding: '3px 10px', borderRadius: 20,
+            fontSize: '0.68rem', fontWeight: 600,
+            background: catColor.bg, color: catColor.color,
+            border: `1px solid ${catColor.border}`,
+            marginBottom: '0.75rem',
+            fontFamily: 'var(--font-mono)',
+          }}>
+            {project.category}
+          </span>
 
-        <p style={{
-          color: 'var(--text-secondary)',
-          fontSize: '0.85rem',
-          lineHeight: 1.65,
-          marginBottom: '1.25rem',
-          position: 'relative',
-          zIndex: 2,
-        }}>
-          {project.shortDesc}
-        </p>
+          <h3 style={{
+            fontFamily: 'var(--font-display)',
+            fontWeight: 700,
+            fontSize: featured ? '1.4rem' : '1.1rem',
+            marginBottom: '0.75rem',
+            color: 'var(--text-primary)',
+          }}>
+            {project.title}
+          </h3>
 
-        {/* Tags */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', position: 'relative', zIndex: 2 }}>
-          {project.tags.map(tag => (
-            <span key={tag} className="tag" style={{ fontSize: '0.7rem' }}>{tag}</span>
-          ))}
-        </div>
+          <p style={{
+            color: 'var(--text-secondary)',
+            fontSize: '0.85rem', lineHeight: 1.65,
+            marginBottom: '1.25rem',
+          }}>
+            {project.shortDesc}
+          </p>
 
-        {/* Click hint */}
-        <div style={{
-          position: 'absolute',
-          bottom: '1rem',
-          right: '1rem',
-          fontSize: '0.7rem',
-          color: 'var(--text-muted)',
-          zIndex: 2,
-        }}>
-          Click to expand →
+          {/* Tags */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            {project.tags.map(tag => (
+              <span key={tag} className="tag" style={{ fontSize: '0.7rem' }}>{tag}</span>
+            ))}
+          </div>
+
+          <div style={{
+            marginTop: '1rem',
+            fontSize: '0.7rem', color: 'var(--accent-primary)',
+            fontFamily: 'var(--font-mono)',
+          }}>
+            [click to expand →]
+          </div>
         </div>
       </div>
     </motion.div>
   );
 }
 
-// ── Dashed Coming Soon / GitHub Card ─────────────────────────────────────────
+/* ── Coming Soon / GitHub Card ────────────────────────────────────────────── */
 function ComingSoonCard() {
   const divRef = useRef(null);
-
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-    >
-      <a
-        href="https://github.com/mohitmohatkar"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ display: 'block', height: '100%' }}
-      >
+    <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
+      <a href="https://github.com/mohitmjm" target="_blank" rel="noopener noreferrer" style={{ display: 'block', height: '100%' }}>
         <div
           ref={divRef}
           onMouseEnter={() => {
             if (divRef.current) {
               divRef.current.style.borderColor = 'var(--accent-primary)';
-              divRef.current.style.background = 'rgba(99,102,241,0.05)';
+              divRef.current.style.background  = 'rgba(59,130,246,0.05)';
+              divRef.current.style.boxShadow   = 'var(--shadow-glow)';
             }
           }}
           onMouseLeave={() => {
             if (divRef.current) {
               divRef.current.style.borderColor = 'var(--border)';
-              divRef.current.style.background = 'transparent';
+              divRef.current.style.background  = 'transparent';
+              divRef.current.style.boxShadow   = 'none';
             }
           }}
           style={{
-            border: '2px dashed var(--border)',
+            border: '1.5px dashed var(--border)',
             borderRadius: 'var(--radius-lg)',
             padding: '2rem 1.75rem',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-            gap: '0.75rem',
-            height: '100%',
-            minHeight: 240,
-            transition: 'border-color 0.25s, background 0.25s',
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            textAlign: 'center', gap: '0.75rem',
+            height: '100%', minHeight: 240,
+            transition: 'border-color 0.25s, background 0.25s, box-shadow 0.25s',
           }}
         >
           <span style={{ fontSize: '2.2rem' }}>📂</span>
-          <h3 style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 700,
-            color: 'var(--text-secondary)',
-          }}>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--text-secondary)' }}>
             More on GitHub
           </h3>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-            Explore my repos for more AI/ML and web projects currently in progress.
+            Explore repos for more AI/ML and web projects currently in progress.
           </p>
           <span style={{
-            padding: '6px 16px',
-            borderRadius: 20,
-            background: 'rgba(99,102,241,0.1)',
-            color: 'var(--accent-primary)',
-            border: '1px solid rgba(99,102,241,0.2)',
-            fontSize: '0.78rem',
-            fontWeight: 600,
+            padding: '6px 16px', borderRadius: 20,
+            background: 'rgba(59,130,246,0.1)', color: 'var(--accent-primary)',
+            border: '1px solid rgba(59,130,246,0.2)',
+            fontSize: '0.78rem', fontWeight: 600,
+            fontFamily: 'var(--font-mono)',
           }}>
             View GitHub →
           </span>
@@ -226,23 +219,24 @@ function ComingSoonCard() {
   );
 }
 
-// ── Project Modal ─────────────────────────────────────────────────────────────
+/* ── Project Modal ────────────────────────────────────────────────────────── */
 function ProjectModal({ project, onClose }) {
+  const catColor = project?.category === 'AI/ML'
+    ? { bg: 'rgba(167,139,250,0.14)', color: 'var(--accent-violet)', border: 'rgba(167,139,250,0.28)' }
+    : { bg: 'rgba(6,182,212,0.12)',   color: 'var(--accent-cyan)',   border: 'rgba(6,182,212,0.22)'   };
+
   return (
     <AnimatePresence>
       {project && (
         <>
           <motion.div
             key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
             style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(0,0,0,0.75)',
-              backdropFilter: 'blur(8px)',
+              position: 'fixed', inset: 0,
+              background: 'rgba(0,0,0,0.8)',
+              backdropFilter: 'blur(10px)',
               zIndex: 2000,
             }}
           />
@@ -253,91 +247,62 @@ function ProjectModal({ project, onClose }) {
             exit={{ opacity: 0, scale: 0.85, y: 40 }}
             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
             style={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
+              position: 'fixed', top: '50%', left: '50%',
               transform: 'translate(-50%, -50%)',
               zIndex: 2001,
               width: 'min(600px, 92vw)',
-              maxHeight: '85vh',
-              overflowY: 'auto',
+              maxHeight: '85vh', overflowY: 'auto',
               background: 'var(--bg-secondary)',
               border: '1px solid var(--border-glow)',
               borderRadius: 'var(--radius-xl)',
               padding: '2.5rem',
-              boxShadow: '0 40px 80px rgba(0,0,0,0.6)',
+              boxShadow: '0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(59,130,246,0.1)',
             }}
           >
-            {/* Close button */}
             <button
               onClick={onClose}
               style={{
-                position: 'absolute',
-                top: '1.25rem',
-                right: '1.25rem',
-                background: 'rgba(255,255,255,0.06)',
+                position: 'absolute', top: '1.25rem', right: '1.25rem',
+                background: 'rgba(59,130,246,0.08)',
                 border: '1px solid var(--border)',
-                borderRadius: '8px',
-                width: 36,
-                height: 36,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--text-secondary)',
-                fontSize: '1rem',
-                cursor: 'none',
+                borderRadius: '8px', width: 36, height: 36,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--text-secondary)', fontSize: '1rem', cursor: 'none',
+                transition: 'border-color 0.2s',
               }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-glow)'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
             >
               ✕
             </button>
 
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{project.emoji}</div>
-
             <span style={{
-              display: 'inline-block',
-              padding: '3px 10px',
-              borderRadius: 20,
-              fontSize: '0.7rem',
-              fontWeight: 600,
-              background: project.category === 'AI/ML' ? 'rgba(139,92,246,0.15)' : 'rgba(34,211,238,0.12)',
-              color: project.category === 'AI/ML' ? 'var(--accent-violet)' : 'var(--accent-cyan)',
-              border: project.category === 'AI/ML' ? '1px solid rgba(139,92,246,0.25)' : '1px solid rgba(34,211,238,0.2)',
-              marginBottom: '0.75rem',
+              display: 'inline-block', padding: '3px 10px', borderRadius: 20,
+              fontSize: '0.7rem', fontWeight: 600,
+              background: catColor.bg, color: catColor.color,
+              border: `1px solid ${catColor.border}`,
+              marginBottom: '0.75rem', fontFamily: 'var(--font-mono)',
             }}>
               {project.category}
             </span>
-
             <h2 style={{
               fontFamily: 'var(--font-display)',
-              fontWeight: 800,
-              fontSize: '1.5rem',
-              marginBottom: '1rem',
-              color: 'var(--text-primary)',
+              fontWeight: 800, fontSize: '1.5rem',
+              marginBottom: '1rem', color: 'var(--text-primary)',
             }}>
               {project.title}
             </h2>
-
-            <p style={{
-              color: 'var(--text-secondary)',
-              lineHeight: 1.75,
-              marginBottom: '1.5rem',
-              fontSize: '0.9rem',
-            }}>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.75, marginBottom: '1.5rem', fontSize: '0.9rem' }}>
               {project.longDesc}
             </p>
-
-            {/* Tags */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '1.75rem' }}>
-              {project.tags.map(tag => (
-                <span key={tag} className="tag">{tag}</span>
-              ))}
+              {project.tags.map(tag => <span key={tag} className="tag">{tag}</span>)}
             </div>
-
-            {/* Action links */}
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               {project.github && (
                 <a href={project.github} target="_blank" rel="noopener noreferrer" className="btn-outline">
-                  🐙 View GitHub
+                  ⌥ View GitHub
                 </a>
               )}
               {project.demo && (
@@ -353,14 +318,17 @@ function ProjectModal({ project, onClose }) {
   );
 }
 
-// ── Projects Section ──────────────────────────────────────────────────────────
+/* ── Projects Section ─────────────────────────────────────────────────────── */
 export default function Projects() {
-  const [activeFilter, setActiveFilter] = useState('All');
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [activeFilter,     setActiveFilter]     = useState('All');
+  const [selectedProject,  setSelectedProject]  = useState(null);
 
   const filtered = activeFilter === 'All'
     ? projects
     : projects.filter(p => p.category === activeFilter);
+
+  // First featured project spans 2 columns
+  const firstFeaturedId = filtered.find(p => p.featured)?.id;
 
   return (
     <section id="projects" style={{ paddingTop: 96, paddingBottom: 96 }}>
@@ -372,12 +340,12 @@ export default function Projects() {
           transition={{ duration: 0.6 }}
           style={{ textAlign: 'center', marginBottom: '3rem' }}
         >
+
           <span className="section-label">Portfolio</span>
           <h2 style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(1.8rem, 4vw, 2.6rem)',
-            fontWeight: 800,
-            marginTop: '0.5rem',
+            fontWeight: 800, marginTop: '0.5rem',
           }}>
             Featured{' '}
             <span style={{
@@ -392,11 +360,9 @@ export default function Projects() {
           <div className="section-divider" style={{ margin: '1rem auto 0' }} />
         </motion.div>
 
-        {/* Filter tabs */}
+        {/* Filter Pills */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
           style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '2.5rem', flexWrap: 'wrap' }}
         >
           {categories.map(cat => (
@@ -404,16 +370,14 @@ export default function Projects() {
               key={cat}
               onClick={() => setActiveFilter(cat)}
               style={{
-                padding: '8px 20px',
-                borderRadius: '20px',
+                padding: '8px 20px', borderRadius: '20px',
                 border: activeFilter === cat ? '1px solid var(--accent-primary)' : '1px solid var(--border)',
-                background: activeFilter === cat ? 'rgba(99,102,241,0.2)' : 'transparent',
+                background: activeFilter === cat ? 'rgba(59,130,246,0.18)' : 'transparent',
                 color: activeFilter === cat ? 'var(--accent-primary)' : 'var(--text-secondary)',
                 fontFamily: 'var(--font-sans)',
-                fontSize: '0.85rem',
-                fontWeight: activeFilter === cat ? 600 : 400,
-                cursor: 'none',
-                transition: 'all 0.2s ease',
+                fontSize: '0.85rem', fontWeight: activeFilter === cat ? 600 : 400,
+                cursor: 'none', transition: 'all 0.2s ease',
+                boxShadow: activeFilter === cat ? '0 0 14px rgba(59,130,246,0.15)' : 'none',
               }}
             >
               {cat}
@@ -421,7 +385,7 @@ export default function Projects() {
           ))}
         </motion.div>
 
-        {/* Bento Grid */}
+        {/* Grid — featured card spans 2 cols */}
         <motion.div
           layout
           className="projects-grid"
@@ -437,6 +401,7 @@ export default function Projects() {
                 key={project.id}
                 project={project}
                 onOpen={setSelectedProject}
+                featured={project.id === firstFeaturedId}
               />
             ))}
             <ComingSoonCard key="coming-soon" />

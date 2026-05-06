@@ -5,8 +5,9 @@ export const experience = [
     title: 'AI/ML Developer',
     subtitle: 'Drowsiness Detection System',
     type: 'Self-Driven & Academic',
-    color: '#8b5cf6',
-    colorRgb: '139,92,246',
+    date: '2023 – Present',
+    color: '#818cf8',
+    colorRgb: '129,140,248',
     highlights: [
       'Built a real-time drowsiness detection system using MediaPipe FaceMesh & OpenCV achieving <400ms alert latency',
       'Implemented Eye Aspect Ratio (EAR) algorithm across 60fps video streams with dynamic calibration',
@@ -20,8 +21,9 @@ export const experience = [
     title: 'Full Stack Developer',
     subtitle: 'HR Portal (Tielo)',
     type: 'Full-Stack Project',
-    color: '#22d3ee',
-    colorRgb: '34,211,238',
+    date: '2024 – Present',
+    color: '#06b6d4',
+    colorRgb: '6,182,212',
     highlights: [
       'Built Tielo — a full-stack HR management portal with Next.js 14, MongoDB Atlas, and Clerk authentication',
       'Designed a premium Bento Box dashboard UI with glassmorphism, analytics widgets, and leave approval workflows',
@@ -35,6 +37,7 @@ export const experience = [
     title: 'Open Source Contributor',
     subtitle: '& Continuous Learner',
     type: 'Continuous Improvement',
+    date: '2022 – Present',
     color: '#fbbf24',
     colorRgb: '251,191,36',
     highlights: [
