@@ -79,26 +79,13 @@
 ### Installation
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/mohitmjm/portfolio-main.git
-cd portfolio-main
-
-# 2. Install dependencies
+git clone https://github.com/mohitmjm/portfolio.git
+cd portfolio
 npm install
-
-# 3. Start the development server
 npm run dev
 ```
 
 The app will be available at `http://localhost:5173`.
-
-### Available Scripts
-
-| Command | Description |
-|---|---|
-| `npm run dev` | Start local dev server with hot reload |
-| `npm run build` | Build optimised production bundle to `dist/` |
-| `npm run preview` | Preview the production build locally |
 
 ---
 
