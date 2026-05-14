@@ -70,25 +70,6 @@
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-- **Node.js** ≥ 18
-- **npm** ≥ 9
-
-### Installation
-
-```bash
-git clone https://github.com/mohitmjm/portfolio.git
-cd portfolio
-npm install
-npm run dev
-```
-
-The app will be available at `http://localhost:5173`.
-
----
-
 ## 📁 Project Structure
 
 ```
