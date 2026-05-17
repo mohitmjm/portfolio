@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projects } from '../data/projects';
+import { useNavigate } from 'react-router-dom';
 
 const categories = ['All', 'AI/ML', 'Web'];
 
@@ -8,6 +9,7 @@ const categories = ['All', 'AI/ML', 'Web'];
 function ProjectCard({ project, onOpen, onOpenReport, featured }) {
   const cardRef  = useRef(null);
   const shineRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleMouseMove = useCallback((e) => {
     const card = cardRef.current;
@@ -202,6 +204,27 @@ function ProjectCard({ project, onOpen, onOpenReport, featured }) {
                   🔥 OPEN LIVE APP
                 </a>
               )}
+              {project.detailsPage && (
+                <button 
+                  onClick={(e) => { e.stopPropagation(); navigate(project.detailsPage); }}
+                  style={{
+                    color: '#fff',
+                    fontWeight: 800,
+                    textDecoration: 'none',
+                    padding: '6px 14px',
+                    border: 'none',
+                    borderRadius: '8px',
+                    background: 'var(--accent-primary)',
+                    boxShadow: '0 4px 14px rgba(59,130,246,0.35)',
+                    letterSpacing: '0.5px',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    fontSize: 'inherit'
+                  }}
+                >
+                  🔥 VIEW DETAILS
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -267,6 +290,7 @@ function ComingSoonCard() {
 
 /* ── Project Modal ────────────────────────────────────────────────────────── */
 function ProjectModal({ project, onClose, onOpenReport }) {
+  const navigate = useNavigate();
   const catColor = project?.category === 'AI/ML'
     ? { bg: 'rgba(167,139,250,0.14)', color: 'var(--accent-violet)', border: 'rgba(167,139,250,0.28)' }
     : { bg: 'rgba(6,182,212,0.12)',   color: 'var(--accent-cyan)',   border: 'rgba(6,182,212,0.22)'   };
@@ -359,6 +383,15 @@ function ProjectModal({ project, onClose, onOpenReport }) {
                 <a href={project.demo} target="_blank" rel="noopener noreferrer" className="btn-primary">
                   🌐 Live Demo
                 </a>
+              )}
+              {project.detailsPage && (
+                <button 
+                  onClick={() => navigate(project.detailsPage)} 
+                  className="btn-primary" 
+                  style={{ cursor: 'pointer', fontFamily: 'inherit', border: 'none' }}
+                >
+                  🔥 View Full Details
+                </button>
               )}
             </div>
           </motion.div>

@@ -9,6 +9,7 @@ export const projects = [
     category: 'Full-Stack',
     github: 'https://github.com/Team-Innovatrix/Smart-HR-protal',
     report: '/assets/Hr_Portal.pdf',
+    detailsPage: '/smart-hr-portal',
     featured: true,
   },
   {

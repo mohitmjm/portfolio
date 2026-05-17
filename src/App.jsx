@@ -119,48 +119,42 @@ function PageLoadOverlay() {
   );
 }
 
-/* ── App ───────────────────────────────────────────────────────────────────── */
-export default function App() {
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import Home from './pages/Home';
+import SmartHRPortal from './pages/SmartHRPortal';
+
+/* ── Route Wrapper for Navbar / Active Section Logic ─────────────────────── */
+function AppContent() {
   const { theme, toggleTheme } = useTheme();
   const [activeSection, setActiveSection] = useState('hero');
-  const mouse = useRef({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouse = (e) => { mouse.current = { x: e.clientX, y: e.clientY }; };
-    window.addEventListener('mousemove', handleMouse);
-    return () => window.removeEventListener('mousemove', handleMouse);
-  }, []);
-
-  useEffect(() => {
-    const sections = document.querySelectorAll('section[id], header[id]');
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
-        });
-      },
-      { threshold: 0.35 }
-    );
-    sections.forEach(s => observer.observe(s));
-    return () => observer.disconnect();
-  }, []);
+  const location = useLocation();
 
   return (
     <>
       <PageLoadOverlay />
       <ScrollProgressBar />
       <CustomCursor />
-      <Navbar theme={theme} toggleTheme={toggleTheme} activeSection={activeSection} />
-      <main>
-        <Hero mouse={mouse} />
-        <About />
-        <Skills />
-        <Education />
-        <Experience />
-        <Projects />
-        <Contact />
-      </main>
+      
+      {/* Only show the main Navbar on the Home page, or we could pass location down */}
+      {location.pathname === '/' && (
+        <Navbar theme={theme} toggleTheme={toggleTheme} activeSection={activeSection} />
+      )}
+      
+      <Routes>
+        <Route path="/" element={<Home setActiveSection={setActiveSection} />} />
+        <Route path="/smart-hr-portal" element={<SmartHRPortal theme={theme} toggleTheme={toggleTheme} />} />
+      </Routes>
+      
       <Footer />
     </>
+  );
+}
+
+/* ── App ───────────────────────────────────────────────────────────────────── */
+export default function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
