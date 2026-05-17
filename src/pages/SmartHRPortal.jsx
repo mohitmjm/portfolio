@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { reportData } from '../data/reportData';
 import { smartHRData } from '../data/smartHR';
@@ -376,6 +377,12 @@ export default function SmartHRPortal() {
               })}
             </div>
           </section>
+
+          {/* ═══════════════════════════════════════════
+              SECTION 3: CONTACT FORM
+          ═══════════════════════════════════════════ */}
+          <ContactSection />
+
         </div>
       </main>
     </div>
@@ -397,6 +404,123 @@ function ReportBlock({ title, children }) {
     <div style={{ marginBottom:32, background:'#fff', border:'1px solid #e5e7eb', borderRadius:14, padding:'28px 32px', boxShadow:'0 2px 8px rgba(0,0,0,0.04)' }}>
       <h3 style={{ fontSize:18, fontWeight:700, color:'#111827', margin:'0 0 20px' }}>{title}</h3>
       {children}
+    </div>
+  );
+}
+
+// ── Light-themed Contact Section ─────────────────────────────────────────────
+const contactLinks = [
+  { icon:'✉', label:'Personal Email', value:'mohitjmohatkar@gmail.com', href:'mailto:mohitjmohatkar@gmail.com', color:'#3b82f6' },
+  { icon:'🎓', label:'College Email',  value:'mohatkarmj@rknec.edu',     href:'mailto:mohatkarmj@rknec.edu',    color:'#06b6d4' },
+  { icon:'💼', label:'LinkedIn',       value:'mohit-mohatkar',           href:'https://www.linkedin.com/in/mohit-mohatkar', color:'#0a66c2' },
+  { icon:'🐱', label:'GitHub',         value:'mohitmjm',                 href:'https://github.com/mohitmjm',   color:'#374151' },
+  { icon:'📸', label:'Instagram',      value:'@mohitmohatkar',           href:'https://www.instagram.com/mohitmohatkar/', color:'#e1306c' },
+];
+
+function LightInput({ id, label, type='text', register, error, rows }) {
+  const [focused, setFocused] = useState(false);
+  const [hasVal,  setHasVal]  = useState(false);
+  const floating = focused || hasVal;
+  const isTA = Boolean(rows);
+  const border = error ? '#ef4444' : focused ? '#1D9E75' : '#d1d5db';
+  const base = {
+    width:'100%', border:`1.5px solid ${border}`, borderRadius:10,
+    padding: isTA ? '22px 14px 10px' : '20px 14px 6px',
+    fontSize:14, color:'#111827', outline:'none', background:'#fff',
+    fontFamily:'inherit', resize: isTA ? 'vertical' : 'none',
+    minHeight: isTA ? 120 : 'auto',
+    transition:'border-color 0.2s, box-shadow 0.2s',
+    boxShadow: focused ? '0 0 0 3px rgba(29,158,117,0.12)' : 'none',
+    boxSizing:'border-box',
+  };
+  const regObj = register(id, { onChange: e => setHasVal(e.target.value.length > 0) });
+  return (
+    <div style={{ position:'relative' }}>
+      <label htmlFor={id} style={{
+        position:'absolute', left:14,
+        top: floating ? 6 : isTA ? 14 : '50%',
+        transform: (!isTA && !floating) ? 'translateY(-50%)' : 'none',
+        fontSize: floating ? 10 : 14, fontWeight: floating ? 600 : 400,
+        color: floating ? '#1D9E75' : '#9ca3af',
+        letterSpacing: floating ? '0.06em' : 0,
+        textTransform: floating ? 'uppercase' : 'none',
+        transition:'all 0.2s', pointerEvents:'none', zIndex:1,
+      }}>{label}</label>
+      {isTA
+        ? <textarea id={id} rows={rows} {...regObj} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} style={base} />
+        : <input   id={id} type={type}  {...regObj} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} style={base} />}
+      {error && <p style={{ color:'#ef4444', fontSize:11, marginTop:4 }}>⚠ {error.message}</p>}
+    </div>
+  );
+}
+
+function ContactSection() {
+  const { register, handleSubmit, reset, formState:{ errors, isSubmitting, isSubmitSuccessful } } = useForm();
+  const onSubmit = async (data) => {
+    try {
+      await fetch('https://formspree.io/f/xwpbjrdn', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data),
+      });
+      reset();
+    } catch(e) { console.error(e); }
+  };
+  const TEAL = '#1D9E75';
+  return (
+    <div style={{ marginTop:80, paddingTop:64, borderTop:'2px solid #e5e7eb' }}>
+      {/* Section heading */}
+      <div style={{ textAlign:'center', marginBottom:48 }}>
+        <div style={{ fontSize:11, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.12em', color:'#9ca3af', marginBottom:8 }}>Get in Touch</div>
+        <h2 style={{ fontSize:32, fontWeight:800, color:'#111827', margin:'0 0 8px' }}>Let's <span style={{ color:TEAL }}>Connect</span></h2>
+        <p style={{ fontSize:15, color:'#6b7280', margin:0 }}>Have a question or collaboration idea? I'd love to hear from you.</p>
+      </div>
+
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:32, alignItems:'start' }}>
+        {/* Contact links */}
+        <div>
+          <h3 style={{ fontSize:16, fontWeight:700, color:'#111827', marginBottom:16 }}>Reach Me At</h3>
+          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+            {contactLinks.map((link, i) => (
+              <a key={i} href={link.href} target={link.href.startsWith('mailto') ? '_self' : '_blank'} rel="noopener noreferrer"
+                style={{ display:'flex', alignItems:'center', gap:14, padding:'12px 16px', borderRadius:12,
+                  background:'#fff', border:'1.5px solid #e5e7eb', textDecoration:'none', transition:'all 0.18s' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = link.color; e.currentTarget.style.transform='translateX(4px)'; e.currentTarget.style.boxShadow=`0 4px 16px ${link.color}22`; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor='#e5e7eb'; e.currentTarget.style.transform='translateX(0)'; e.currentTarget.style.boxShadow='none'; }}
+              >
+                <div style={{ width:38, height:38, borderRadius:9, background:`${link.color}12`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:18, flexShrink:0 }}>{link.icon}</div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:11, color:'#9ca3af', fontWeight:500 }}>{link.label}</div>
+                  <div style={{ fontSize:13.5, color:'#111827', fontWeight:600 }}>{link.value}</div>
+                </div>
+                <span style={{ color:'#d1d5db', fontSize:16 }}>→</span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Form */}
+        <div style={{ background:'#fff', border:'1.5px solid #e5e7eb', borderRadius:16, padding:'32px', boxShadow:'0 4px 24px rgba(0,0,0,0.06)' }}>
+          <h3 style={{ fontSize:18, fontWeight:700, color:'#111827', margin:'0 0 6px' }}>Send a Message</h3>
+          <p style={{ fontSize:13.5, color:'#6b7280', margin:'0 0 24px', lineHeight:1.6 }}>Have a question, collaboration idea, or just want to say hi? I'll get back to you ASAP.</p>
+          <form onSubmit={handleSubmit(onSubmit)} style={{ display:'flex', flexDirection:'column', gap:14 }}>
+            <LightInput id="name2"    label="Your Name"  register={id => register(id, { required:'Name required' })}   error={errors.name2} />
+            <LightInput id="email2"   label="Your Email" type="email" register={id => register(id, { required:'Email required', pattern:{ value:/^\S+@\S+\.\S+$/, message:'Invalid email'} })} error={errors.email2} />
+            <LightInput id="subject2" label="Subject"    register={id => register(id)} error={null} />
+            <LightInput id="message2" label="Message"    rows={5} register={id => register(id, { required:'Message required' })} error={errors.message2} />
+            <button type="submit" disabled={isSubmitting || isSubmitSuccessful}
+              style={{ padding:'13px 24px', borderRadius:10, border:'none', cursor:'pointer', fontSize:14, fontWeight:700,
+                background: isSubmitSuccessful ? '#e0fdf4' : TEAL,
+                color: isSubmitSuccessful ? TEAL : '#fff',
+                boxShadow: isSubmitSuccessful ? 'none' : `0 4px 14px ${TEAL}40`,
+                transition:'all 0.2s', opacity: isSubmitting ? 0.7 : 1,
+              }}
+              onMouseEnter={e => { if(!isSubmitSuccessful) e.currentTarget.style.opacity='0.85'; }}
+              onMouseLeave={e => { e.currentTarget.style.opacity='1'; }}
+            >
+              {isSubmitting ? '⏳ Sending...' : isSubmitSuccessful ? '✅ Message Sent!' : 'Send Message ✉'}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
