@@ -190,7 +190,7 @@ export default function About() {
                 Get a copy of my latest resume — or reach out directly if you'd like to connect.
               </p>
               <a
-                href="/assets/Mohit_Mohatkar_Resume.pdf"
+                href="/assets/resume_Mohit.pdf"
                 download="Mohit_Mohatkar_Resume.pdf"
                 className="btn-primary"
                 style={{ marginTop: '0.5rem' }}

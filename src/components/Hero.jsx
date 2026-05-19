@@ -427,7 +427,7 @@ export default function Hero({ mouse }) {
           }}
         >
           <MagneticButton
-            href="/assets/Mohit_Mohatkar_Resume.pdf"
+            href="/assets/resume_Mohit.pdf"
             download="Mohit_Mohatkar_Resume.pdf"
             primary
           >

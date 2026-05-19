@@ -231,7 +231,7 @@ export default function Experience() {
               Get in Touch ✉
             </button>
             <a
-              href="/assets/Mohit_Mohatkar_Resume.pdf"
+              href="/assets/resume_Mohit.pdf"
               download="Mohit_Mohatkar_Resume.pdf"
               className="btn-outline"
             >
