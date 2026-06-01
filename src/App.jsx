@@ -11,6 +11,7 @@ import Experience from './components/Experience';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import ChatBot from './components/ChatBot';
 
 /* ── Custom Cursor ─────────────────────────────────────────────────────────── */
 function CustomCursor() {
@@ -145,7 +146,8 @@ function AppContent() {
         <Route path="/smart-hr-portal" element={<SmartHRPortal theme={theme} toggleTheme={toggleTheme} />} />
       </Routes>
       
-      <Footer />
+      {location.pathname !== '/smart-hr-portal' && <Footer />}
+      <ChatBot />
     </>
   );
 }
