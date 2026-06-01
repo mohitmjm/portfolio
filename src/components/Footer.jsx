@@ -1,8 +1,28 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiGithub, FiLinkedin, FiInstagram, FiMail } from 'react-icons/fi';
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const [views, setViews] = useState(null);
+
+  useEffect(() => {
+    // Only increment views once per session to prevent spamming
+    const hasVisited = sessionStorage.getItem('portfolio-visited');
+    const url = hasVisited 
+      ? 'https://api.counterapi.dev/v1/mohitmohatkar/portfolio'
+      : 'https://api.counterapi.dev/v1/mohitmohatkar/portfolio/up';
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        if (data && typeof data.value === 'number') {
+          setViews(data.value);
+          sessionStorage.setItem('portfolio-visited', 'true');
+        }
+      })
+      .catch(err => console.error('Error fetching page views:', err));
+  }, []);
 
   const socials = [
     { label: 'GitHub',    href: 'https://github.com/mohitmjm',                icon: FiGithub },
@@ -88,6 +108,32 @@ export default function Footer() {
                 <s.icon size={15} /> {s.label}
               </a>
             ))}
+          </div>
+
+          {/* Views Counter */}
+          <div style={{
+            fontSize: '0.75rem',
+            color: 'var(--text-secondary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            background: 'rgba(59, 130, 246, 0.05)',
+            padding: '4px 12px',
+            borderRadius: '12px',
+            border: '1px solid var(--border)',
+            fontFamily: 'var(--font-mono)',
+            marginTop: '0.25rem',
+          }}>
+            <span style={{ 
+              display: 'inline-block', 
+              width: '6px', 
+              height: '6px', 
+              background: views !== null ? 'var(--accent-cyan)' : 'var(--text-muted)', 
+              borderRadius: '50%',
+              boxShadow: views !== null ? '0 0 8px var(--accent-cyan)' : 'none',
+              transition: 'background 0.3s ease'
+            }} />
+            <span>VIEWS: {views !== null ? views.toLocaleString() : '...'}</span>
           </div>
 
           {/* Divider */}
