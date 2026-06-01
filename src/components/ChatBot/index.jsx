@@ -13,6 +13,27 @@ const QUICK_REPLIES = [
   { text: '🤖 About AntiGravity', isHighlight: false }
 ];
 
+const parseLinks = (text) => {
+  if (!text) return '';
+  const parts = text.split(/(https?:\/\/[^\s!.),]+)/g);
+  return parts.map((part, i) => {
+    if (part.match(/^https?:\/\//)) {
+      return (
+        <a 
+          key={i} 
+          href={part} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          style={{ color: '#06b6d4', textDecoration: 'underline', fontWeight: 600 }}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
@@ -57,7 +78,7 @@ export default function ChatBot() {
       if (q.includes('ai') || q.includes('ml') || q.includes('model') || q.includes('feature')) {
         return "The Smart HR Portal includes 4 main AI features:\n1. AI Turnover Prediction: Forecasts employee flight risks.\n2. Risk & Mood Intelligence: Collects sentiment scores and flags burnout alerts.\n3. AI Employee Analysis: Evaluates productivity and generates recommendation scores.\n4. AI Voice Assistant: Hands-free voice command system via Gemini.";
       }
-      return "The Smart HR Portal is an advanced HRMS project integrating predictive analytics. It features comprehensive employee workflows, admin tools, and AI turnover/mood models. For a complete interactive walkthrough and live screenshot demo of all 27 modules, visit the [Smart HR Portal details page](/smart-hr-portal)!";
+      return "The Smart HR Portal is an advanced HRMS project integrating predictive analytics. It features comprehensive employee workflows, admin tools, and AI turnover/mood models. For a complete interactive walkthrough and live screenshot demo of all 27 modules, visit the Smart HR Portal details page at https://mohitmohatkar.in/smart-hr-portal!";
     }
     
     if (q.includes('resume') || q.includes('parser') || q.includes('nlp')) {
@@ -244,7 +265,7 @@ export default function ChatBot() {
                   className={`chatbot-msg-wrapper ${msg.sender}`}
                 >
                   <div className="chatbot-bubble" style={{ whiteSpace: 'pre-line' }}>
-                    {msg.text}
+                    {parseLinks(msg.text)}
                   </div>
                 </div>
               ))}
