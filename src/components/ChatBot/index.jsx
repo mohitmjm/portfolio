@@ -15,19 +15,28 @@ const QUICK_REPLIES = [
 
 const parseLinks = (text) => {
   if (!text) return '';
-  const parts = text.split(/(https?:\/\/[^\s!.),]+)/g);
+  const parts = text.split(/(https?:\/\/[^\s]+)/g);
   return parts.map((part, i) => {
     if (part.match(/^https?:\/\//)) {
+      const trailingPuncMatch = part.match(/([!.,?)]+)$/);
+      let url = part;
+      let suffix = '';
+      if (trailingPuncMatch) {
+        url = part.slice(0, -trailingPuncMatch[0].length);
+        suffix = trailingPuncMatch[0];
+      }
       return (
-        <a 
-          key={i} 
-          href={part} 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          style={{ color: '#06b6d4', textDecoration: 'underline', fontWeight: 600 }}
-        >
-          {part}
-        </a>
+        <span key={i}>
+          <a 
+            href={url} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={{ color: '#06b6d4', textDecoration: 'underline', fontWeight: 600 }}
+          >
+            {url}
+          </a>
+          {suffix}
+        </span>
       );
     }
     return part;

@@ -16,8 +16,8 @@ export default function Footer() {
     fetch(url)
       .then(res => res.json())
       .then(data => {
-        if (data && typeof data.value === 'number') {
-          setViews(data.value);
+        if (data && typeof data.count === 'number') {
+          setViews(data.count);
           sessionStorage.setItem('portfolio-visited', 'true');
         }
       })
