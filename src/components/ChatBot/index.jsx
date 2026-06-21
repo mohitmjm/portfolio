@@ -43,6 +43,76 @@ const parseLinks = (text) => {
   });
 };
 
+// Groq model is configurable via env; falls back to a current production model.
+const GROQ_MODEL = import.meta.env.VITE_GROQ_MODEL || 'llama-3.3-70b-versatile';
+
+// Calls the Gemini API. Returns the reply text, or throws an error
+// (error.status carries the HTTP status, e.g. 429 when the quota/limit is exhausted).
+async function callGemini(apiKey, conversation) {
+  const formattedHistory = conversation.map(msg => ({
+    role: msg.sender === 'user' ? 'user' : 'model',
+    parts: [{ text: msg.text }]
+  }));
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: formattedHistory,
+        systemInstruction: { parts: [{ text: systemPrompt }] }
+      })
+    }
+  );
+
+  if (!response.ok) {
+    const error = new Error(`Gemini API request failed (${response.status})`);
+    error.status = response.status;
+    throw error;
+  }
+
+  const data = await response.json();
+  const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!reply) throw new Error('Gemini returned an empty response');
+  return reply.trim();
+}
+
+// Calls the Groq API (OpenAI-compatible chat completions). Returns the reply text or throws.
+async function callGroq(apiKey, conversation) {
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    ...conversation.map(msg => ({
+      role: msg.sender === 'user' ? 'user' : 'assistant',
+      content: msg.text
+    }))
+  ];
+
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      messages,
+      temperature: 0.7
+    })
+  });
+
+  if (!response.ok) {
+    const error = new Error(`Groq API request failed (${response.status})`);
+    error.status = response.status;
+    throw error;
+  }
+
+  const data = await response.json();
+  const reply = data.choices?.[0]?.message?.content;
+  if (!reply) throw new Error('Groq returned an empty response');
+  return reply.trim();
+}
+
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
@@ -121,7 +191,7 @@ export default function ChatBot() {
     return "Mohit will get back to you — hit the contact section! (Note: Connect the Gemini API by setting VITE_GEMINI_API_KEY in your environment to unlock my full live AI persona!)";
   };
 
-  // Submit message to Gemini API or Fallback
+  // Submit message: Gemini first, then Groq when Gemini fails/limit is hit, then local fallback.
   const handleSendMessage = async (textToSend) => {
     if (!textToSend.trim()) return;
 
@@ -131,56 +201,52 @@ export default function ChatBot() {
     setInputValue('');
     setIsTyping(true);
 
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    const groqKey = import.meta.env.VITE_GROQ_API_KEY;
 
-    if (apiKey) {
-      try {
-        // Format history for Gemini (filtering out the initial bot welcome message)
-        const formattedHistory = newMessages.slice(1).map(msg => ({
-          role: msg.sender === 'user' ? 'user' : 'model',
-          parts: [{ text: msg.text }]
-        }));
+    // Conversation history excluding the initial bot welcome message
+    const conversation = newMessages.slice(1);
 
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              contents: formattedHistory,
-              systemInstruction: {
-                parts: [{ text: systemPrompt }]
-              }
-            })
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error('API request failed');
-        }
-
-        const data = await response.json();
-        const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 
-                         "Mohit will get back to you — hit the contact section!";
-        
-        setMessages(prev => [...prev, { sender: 'bot', text: botReply.trim() }]);
-      } catch (error) {
-        console.error('Error calling Gemini API:', error);
-        // Fallback to local response
-        const fallbackReply = generateLocalResponse(textToSend);
-        setMessages(prev => [...prev, { sender: 'bot', text: fallbackReply }]);
-      } finally {
-        setIsTyping(false);
-      }
-    } else {
-      // Simulate network delay for natural feel
+    // No AI provider configured -> local response with a natural delay
+    if (!geminiKey && !groqKey) {
       setTimeout(() => {
         const fallbackReply = generateLocalResponse(textToSend);
         setMessages(prev => [...prev, { sender: 'bot', text: fallbackReply }]);
         setIsTyping(false);
       }, 1000);
+      return;
+    }
+
+    try {
+      let botReply;
+
+      if (geminiKey) {
+        try {
+          botReply = await callGemini(geminiKey, conversation);
+        } catch (geminiError) {
+          // Gemini failed — most commonly a 429 when the free-tier limit/quota is exhausted.
+          // Automatically shift to Groq when a key is available.
+          if (groqKey) {
+            console.warn(
+              `Gemini unavailable (status ${geminiError.status ?? 'n/a'}). Falling back to Groq.`
+            );
+            botReply = await callGroq(groqKey, conversation);
+          } else {
+            throw geminiError;
+          }
+        }
+      } else {
+        // Only Groq configured
+        botReply = await callGroq(groqKey, conversation);
+      }
+
+      setMessages(prev => [...prev, { sender: 'bot', text: botReply }]);
+    } catch (error) {
+      console.error('All AI providers failed, using local response:', error);
+      const fallbackReply = generateLocalResponse(textToSend);
+      setMessages(prev => [...prev, { sender: 'bot', text: fallbackReply }]);
+    } finally {
+      setIsTyping(false);
     }
   };
 
