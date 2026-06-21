@@ -318,7 +318,7 @@ export default function Hero({ mouse }) {
             }}
           >
             <img
-              src="/assets/profile_p.jpeg"
+              src="/assets/profile.png"
               alt="Mohit Mohatkar"
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               onError={e => {
