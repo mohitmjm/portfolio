@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from './hooks/useTheme';
 import './styles/globals.css';
@@ -124,30 +124,64 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Home from './pages/Home';
 import SmartHRPortal from './pages/SmartHRPortal';
 
+// Lazy-loaded so Monaco + Pyodide only load when /compiler is visited.
+const Compiler = lazy(() => import('./pages/Compiler'));
+
+function CompilerFallback() {
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 1000,
+        background: '#09090b',
+        color: '#a1a1aa',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: "'JetBrains Mono', monospace",
+        fontSize: '0.9rem',
+        letterSpacing: '0.06em',
+      }}
+    >
+      Loading Python Studio…
+    </div>
+  );
+}
+
 /* ── Route Wrapper for Navbar / Active Section Logic ─────────────────────── */
 function AppContent() {
   const { theme, toggleTheme } = useTheme();
   const [activeSection, setActiveSection] = useState('hero');
   const location = useLocation();
+  const isCompiler = location.pathname === '/compiler';
 
   return (
     <>
-      <PageLoadOverlay />
-      <ScrollProgressBar />
-      <CustomCursor />
-      
+      {!isCompiler && <PageLoadOverlay />}
+      {!isCompiler && <ScrollProgressBar />}
+      {!isCompiler && <CustomCursor />}
+
       {/* Only show the main Navbar on the Home page, or we could pass location down */}
       {location.pathname === '/' && (
         <Navbar theme={theme} toggleTheme={toggleTheme} activeSection={activeSection} />
       )}
-      
+
       <Routes>
         <Route path="/" element={<Home setActiveSection={setActiveSection} />} />
         <Route path="/smart-hr-portal" element={<SmartHRPortal theme={theme} toggleTheme={toggleTheme} />} />
+        <Route
+          path="/compiler"
+          element={
+            <Suspense fallback={<CompilerFallback />}>
+              <Compiler />
+            </Suspense>
+          }
+        />
       </Routes>
-      
-      {location.pathname !== '/smart-hr-portal' && <Footer />}
-      <ChatBot />
+
+      {location.pathname !== '/smart-hr-portal' && !isCompiler && <Footer />}
+      {!isCompiler && <ChatBot />}
     </>
   );
 }

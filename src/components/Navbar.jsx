@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import LogoMM from './LogoMM';
 
 const navLinks = [
@@ -58,6 +59,7 @@ function ThemeToggle({ theme, onToggle }) {
 export default function Navbar({ theme, toggleTheme, activeSection }) {
   const [scrolled,  setScrolled]  = useState(false);
   const [menuOpen,  setMenuOpen]  = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -152,6 +154,30 @@ export default function Navbar({ theme, toggleTheme, activeSection }) {
               </li>
             );
           })}
+          {/* Highlighted route link to the Python Compiler page */}
+          <li style={{ position: 'relative' }}>
+            <button
+              onClick={() => { setMenuOpen(false); navigate('/compiler'); }}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                background: 'linear-gradient(135deg, rgba(59,130,246,0.16), rgba(139,92,246,0.16))',
+                color: 'var(--accent-primary)',
+                border: '1px solid rgba(99,102,241,0.35)',
+                borderRadius: '8px',
+                padding: '6px 14px',
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                cursor: 'none',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 16px rgba(99,102,241,0.3)'; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; }}
+            >
+              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>{'</>'}</span>
+              Python Compiler
+            </button>
+          </li>
         </ul>
 
         <ThemeToggle theme={theme} onToggle={toggleTheme} />
@@ -247,6 +273,31 @@ export default function Navbar({ theme, toggleTheme, activeSection }) {
                   {link.label}
                 </motion.button>
               ))}
+              {/* Route link to the Python Compiler page */}
+              <motion.button
+                initial={{ x: 40, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: navLinks.length * 0.05 }}
+                onClick={() => { setMenuOpen(false); navigate('/compiler'); }}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(59,130,246,0.14), rgba(139,92,246,0.14))',
+                  border: '1px solid rgba(99,102,241,0.3)',
+                  color: 'var(--accent-primary)',
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '1.2rem',
+                  fontWeight: 600,
+                  padding: '12px 14px',
+                  textAlign: 'left',
+                  cursor: 'none',
+                  borderRadius: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>{'</>'}</span>
+                Python Compiler
+              </motion.button>
               <button
                 onClick={toggleTheme}
                 style={{
