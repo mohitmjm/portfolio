@@ -62,8 +62,9 @@ export default function Compiler() {
   const [runId, setRunId] = useState(0);
   const [templatesOpen, setTemplatesOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
-  const { status, lines, run, clear, setLines } = usePythonRunner();
+  const { status, lines, awaitingInput, provideInput, run, clear, setLines } = usePythonRunner();
 
   const busyRef = useRef(false);
   const outRef = useRef(null);
@@ -98,6 +99,11 @@ export default function Compiler() {
       });
     }
   }, [ai.status, ai.kind]);
+
+  // keep the interactive input line in view
+  useEffect(() => {
+    if (awaitingInput && outRef.current) outRef.current.scrollTop = outRef.current.scrollHeight;
+  }, [awaitingInput]);
 
   // mouse parallax -> CSS vars on root
   useEffect(() => {
@@ -148,7 +154,7 @@ export default function Compiler() {
     setRunId((n) => n + 1);
 
     const snapshot = code;
-    const result = await run(snapshot, '');
+    const result = await run(snapshot);
     const outputText = linesRef.current.map((l) => l.text).join('');
 
     setLines((prev) => {
@@ -365,8 +371,26 @@ export default function Compiler() {
                     </span>
                   ))
                 )}
-                {running && <span className="pyc-blink" aria-hidden="true" />}
+                {running && !awaitingInput && <span className="pyc-blink" aria-hidden="true" />}
               </div>
+
+              {awaitingInput && (
+                <form
+                  className="pyc-stdin-line"
+                  onSubmit={(e) => { e.preventDefault(); provideInput(inputValue); setInputValue(''); }}
+                >
+                  <span className="pyc-stdin-caret">›</span>
+                  <input
+                    autoFocus
+                    className="pyc-stdin-input"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Type input, then press Enter"
+                    spellCheck="false"
+                    aria-label="Program input"
+                  />
+                </form>
+              )}
 
               <AnimatePresence>
                 {ai.status !== 'idle' && (

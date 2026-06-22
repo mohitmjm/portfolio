@@ -1,21 +1,16 @@
 /* ============================================================================
  * pyodide-worker.js — Python execution sandbox (Web Worker)
  * ----------------------------------------------------------------------------
- * Runs CPython (via Pyodide / WebAssembly) OFF the main thread. Because it
- * lives in a Worker, the main UI stays responsive and the host page can
- * enforce a hard timeout by terminating this worker. User code therefore never
- * executes on any server — it runs inside the visitor's own browser sandbox.
+ * Runs CPython (Pyodide / WebAssembly) off the main thread.
  *
- * Message protocol (main -> worker):
- *   { type: 'init' }
- *   { type: 'run', id, code, stdin }
+ * Interactive stdin: instead of Pyodide's emulated OS stdin device (which
+ * raises [Errno 29] on read in a worker), we override Python's builtins.input
+ * to call a JS function (__js_input) that BLOCKS on a SharedArrayBuffer via
+ * Atomics.wait until the main thread supplies a line. Requires the page to be
+ * cross-origin isolated (COOP/COEP). Without a shared buffer, input() -> EOF.
  *
- * Message protocol (worker -> main):
- *   { type: 'ready', version }
- *   { type: 'initError', error }
- *   { type: 'stdout', id, text }
- *   { type: 'stderr', id, text }
- *   { type: 'result', id, ok, error, time, memory }
+ * Shared buffer layout: Int32 control [flag, length] at byte 0..8, then a
+ * Uint8 data region from byte 8.
  * ========================================================================== */
 
 /* eslint-disable no-restricted-globals */
@@ -26,33 +21,40 @@ const INDEX_URL = `https://cdn.jsdelivr.net/pyodide/${PYODIDE_VERSION}/full/`;
 let pyodide = null;
 let readyPromise = null;
 
-/*
- * Python harness. Defined once after the runtime boots. It:
- *  - feeds a provided stdin buffer to input() so programs never hang waiting
- *    for interactive input,
- *  - reports clean syntax-error messages,
- *  - strips the harness frame from tracebacks so users only see their own code,
- *  - measures wall-clock time (perf_counter) and peak Python heap (tracemalloc).
- * String.raw keeps backslashes (e.g. "\n") literal for Python.
- */
+let control = null; // Int32Array [flag, length]
+let data = null; // Uint8Array data region
+const decoder = new TextDecoder();
+
+// Called synchronously from Python (as __js_input). Blocks the worker until the
+// main thread writes a line into the shared buffer. Returns the line, or null = EOF.
+function jsInput() {
+  if (!control) return null;
+  Atomics.store(control, 0, 0);
+  self.postMessage({ type: 'needInput' });
+  Atomics.wait(control, 0, 0);
+  const len = Atomics.load(control, 1);
+  if (len < 0) return null;
+  // TextDecoder rejects SharedArrayBuffer-backed views, so copy to a plain array first.
+  const bytes = new Uint8Array(len);
+  bytes.set(data.subarray(0, len));
+  return decoder.decode(bytes);
+}
+
 const HARNESS = String.raw`
-import sys, io, time, builtins, traceback, tracemalloc, json
+import sys, time, traceback, tracemalloc, json, builtins
 
-def __run_user_code(__src, __stdin_data):
-    __stdin = io.StringIO(__stdin_data or "")
-    __orig_input = builtins.input
-    __orig_stdin = sys.stdin
+def __patched_input(prompt=""):
+    if prompt:
+        sys.stdout.write(str(prompt))
+        sys.stdout.flush()
+    line = __js_input()
+    if line is None:
+        raise EOFError("EOF when reading a line")
+    return line.rstrip("\n")
 
-    def __patched_input(prompt=""):
-        if prompt:
-            sys.stdout.write(str(prompt))
-            sys.stdout.flush()
-        line = __stdin.readline()
-        if not line:
-            raise EOFError("EOF when reading a line")
-        return line.rstrip("\n")
+builtins.input = __patched_input
 
-    # Compile separately so syntax errors are reported cleanly (with caret).
+def __run_user_code(__src):
     try:
         code_obj = compile(__src, "<main>", "exec")
     except SyntaxError:
@@ -64,8 +66,6 @@ def __run_user_code(__src, __stdin_data):
         })
 
     err = None
-    builtins.input = __patched_input
-    sys.stdin = __stdin
     tracemalloc.start()
     t0 = time.perf_counter()
     try:
@@ -74,11 +74,10 @@ def __run_user_code(__src, __stdin_data):
         pass
     except BaseException:
         et, ev, tb = sys.exc_info()
-        # Show only user/library frames; hide internal harness frames ("<exec>").
-        user_frames = [f for f in traceback.extract_tb(tb) if f.filename != "<exec>"]
-        if user_frames:
+        frames = [f for f in traceback.extract_tb(tb) if f.filename != "<exec>"]
+        if frames:
             parts = ["Traceback (most recent call last):\n"]
-            parts += traceback.format_list(user_frames)
+            parts += traceback.format_list(frames)
             parts += traceback.format_exception_only(et, ev)
             err = "".join(parts)
         else:
@@ -87,8 +86,6 @@ def __run_user_code(__src, __stdin_data):
         elapsed = time.perf_counter() - t0
         _cur, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
-        builtins.input = __orig_input
-        sys.stdin = __orig_stdin
 
     return json.dumps({"error": err, "time": elapsed, "memory": peak})
 `;
@@ -100,6 +97,7 @@ async function init() {
     // eslint-disable-next-line no-undef
     pyodide = await loadPyodide({ indexURL: INDEX_URL });
     await pyodide.runPythonAsync(HARNESS);
+    pyodide.globals.set('__js_input', jsInput); // expose blocking input to Python
     return pyodide;
   })();
   return readyPromise;
@@ -109,6 +107,10 @@ self.onmessage = async (event) => {
   const msg = event.data || {};
 
   if (msg.type === 'init') {
+    if (msg.sab) {
+      control = new Int32Array(msg.sab, 0, 2);
+      data = new Uint8Array(msg.sab, 8);
+    }
     try {
       await init();
       self.postMessage({ type: 'ready', version: pyodide.version });
@@ -119,7 +121,7 @@ self.onmessage = async (event) => {
   }
 
   if (msg.type === 'run') {
-    const { id, code, stdin } = msg;
+    const { id, code } = msg;
 
     try {
       await init();
@@ -135,14 +137,26 @@ self.onmessage = async (event) => {
       return;
     }
 
-    // Stream stdout/stderr back to the page as the program runs.
-    pyodide.setStdout({ batched: (text) => self.postMessage({ type: 'stdout', id, text }) });
-    pyodide.setStderr({ batched: (text) => self.postMessage({ type: 'stderr', id, text }) });
+    const outDecoder = new TextDecoder('utf-8', { fatal: false });
+    const errDecoder = new TextDecoder('utf-8', { fatal: false });
+    // Unbuffered writes so input() prompts (no trailing newline) show immediately.
+    pyodide.setStdout({
+      write: (buf) => {
+        self.postMessage({ type: 'stdout', id, text: outDecoder.decode(buf, { stream: true }) });
+        return buf.length;
+      },
+    });
+    pyodide.setStderr({
+      write: (buf) => {
+        self.postMessage({ type: 'stderr', id, text: errDecoder.decode(buf, { stream: true }) });
+        return buf.length;
+      },
+    });
 
     try {
       pyodide.globals.set('__src', code);
-      pyodide.globals.set('__stdin_data', stdin || '');
-      const resultJson = await pyodide.runPythonAsync('__run_user_code(__src, __stdin_data)');
+      // Synchronous run so the blocking input (Atomics.wait) works cleanly.
+      const resultJson = pyodide.runPython('__run_user_code(__src)');
       const result = JSON.parse(resultJson);
       self.postMessage({
         type: 'result',
@@ -166,7 +180,6 @@ self.onmessage = async (event) => {
         pyodide.setStdout({});
         pyodide.setStderr({});
         pyodide.globals.delete('__src');
-        pyodide.globals.delete('__stdin_data');
       } catch (_) {
         /* ignore cleanup errors */
       }

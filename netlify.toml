@@ -6,3 +6,11 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Cross-origin isolation so the Python compiler can use SharedArrayBuffer
+# (interactive stdin). credentialless keeps CDN assets loading.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Embedder-Policy = "credentialless"

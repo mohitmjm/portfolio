@@ -296,6 +296,32 @@
 .pyc-blink { display: inline-block; width: 8px; height: 1.05em; background: var(--accent); vertical-align: text-bottom; animation: pyc-blink 1s step-end infinite; }
 @keyframes pyc-blink { 50% { opacity: 0; } }
 
+/* interactive terminal input line (appears while a program awaits input()) */
+.pyc-stdin-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 1rem 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border-glow);
+  border-radius: 9px;
+  background: rgba(99, 102, 241, 0.08);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.08);
+}
+.pyc-stdin-caret { color: var(--accent); font-family: var(--mono); font-weight: 700; }
+.pyc-stdin-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.84rem;
+}
+.pyc-stdin-input::placeholder { color: var(--faint); }
+.pyc-line.stdin { color: var(--accent); }
+
 .pyc-clear {
   padding: 0.3rem 0.7rem;
   font-size: 0.76rem;
