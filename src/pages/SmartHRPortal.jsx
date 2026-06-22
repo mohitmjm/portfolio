@@ -248,6 +248,7 @@ export default function SmartHRPortal() {
                   href={reportData.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="View the Smart HR Portal live project (opens in new tab)"
                   className="btn-primary"
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}
                 >
@@ -257,6 +258,7 @@ export default function SmartHRPortal() {
                   href={reportData.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="View the Smart HR Portal GitHub repository (opens in new tab)"
                   className="btn-outline"
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}
                 >

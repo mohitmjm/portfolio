@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { useTheme } from './hooks/useTheme';
 import './styles/globals.css';
 import Navbar from './components/Navbar';
@@ -11,7 +11,6 @@ import Experience from './components/Experience';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import ChatBot from './components/ChatBot';
 
 /* ── Custom Cursor ─────────────────────────────────────────────────────────── */
 function CustomCursor() {
@@ -126,6 +125,8 @@ import SmartHRPortal from './pages/SmartHRPortal';
 
 // Lazy-loaded so Monaco + Pyodide only load when /compiler is visited.
 const Compiler = lazy(() => import('./pages/Compiler'));
+// Lazy-loaded: the chatbot isn't needed for first paint.
+const ChatBot = lazy(() => import('./components/ChatBot'));
 
 function CompilerFallback() {
   return (
@@ -181,7 +182,11 @@ function AppContent() {
       </Routes>
 
       {location.pathname !== '/smart-hr-portal' && !isCompiler && <Footer />}
-      {!isCompiler && <ChatBot />}
+      {!isCompiler && (
+        <Suspense fallback={null}>
+          <ChatBot />
+        </Suspense>
+      )}
     </>
   );
 }
@@ -190,7 +195,9 @@ function AppContent() {
 export default function App() {
   return (
     <Router>
-      <AppContent />
+      <MotionConfig reducedMotion="user">
+        <AppContent />
+      </MotionConfig>
     </Router>
   );
 }

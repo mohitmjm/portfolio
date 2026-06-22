@@ -137,6 +137,10 @@ export default function Education() {
                     <img
                       src={edu.logo}
                       alt={edu.shortName}
+                      width={56}
+                      height={56}
+                      loading="lazy"
+                      decoding="async"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={e => {
                         e.target.style.display = 'none';

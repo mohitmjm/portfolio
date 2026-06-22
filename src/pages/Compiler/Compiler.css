@@ -577,3 +577,21 @@
   .pyc *, .pyc *::before, .pyc *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   .pyc-bg-canvas, .pyc-stage { transform: none !important; }
 }
+
+/* backdrop-filter fallback: opaque glass panels on browsers without support */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .pyc-island,
+  .pyc-card,
+  .pyc-dock-inner,
+  .pyc-modal,
+  .pyc-ai {
+    background: #11162a;
+  }
+  .pyc.light .pyc-island,
+  .pyc.light .pyc-card,
+  .pyc.light .pyc-dock-inner,
+  .pyc.light .pyc-modal,
+  .pyc.light .pyc-ai {
+    background: #eef1fb;
+  }
+}

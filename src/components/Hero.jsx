@@ -320,6 +320,10 @@ export default function Hero({ mouse }) {
             <img
               src="/assets/profile.png"
               alt="Mohit Mohatkar"
+              width={160}
+              height={160}
+              fetchPriority="high"
+              decoding="async"
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               onError={e => {
                 e.target.style.display = 'none';

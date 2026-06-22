@@ -537,3 +537,40 @@ section {
   .footer-socials { gap: 8px; }
   .footer-socials a { font-size: 0.75rem; padding: 6px 12px; }
 }
+
+/* ---- Reduced Motion (accessibility) ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* restore the native cursor and hide the decorative custom cursor */
+  html,
+  body,
+  a,
+  button {
+    cursor: auto !important;
+  }
+  .cursor-dot,
+  .cursor-ring,
+  .scroll-progress {
+    display: none !important;
+  }
+  body::before {
+    display: none; /* noise overlay */
+  }
+}
+
+/* ---- backdrop-filter fallback (older browsers): keep panels readable ---- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card,
+  .chatbot-window,
+  .chatbot-tooltip {
+    background: var(--bg-secondary);
+  }
+}

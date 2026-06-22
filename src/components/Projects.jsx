@@ -188,6 +188,7 @@ function ProjectCard({ project, onOpen, onOpenReport, featured }) {
                   href={project.demo} 
                   target="_blank" 
                   rel="noopener noreferrer" 
+                  aria-label={`Open ${project.title} live app (opens in new tab)`}
                   onClick={(e) => e.stopPropagation()}
                   style={{
                     color: '#fff',
@@ -238,7 +239,7 @@ function ComingSoonCard() {
   const divRef = useRef(null);
   return (
     <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
-      <a href="https://github.com/mohitmjm" target="_blank" rel="noopener noreferrer" style={{ display: 'block', height: '100%' }}>
+      <a href="https://github.com/mohitmjm" target="_blank" rel="noopener noreferrer" aria-label="Visit Mohit Mohatkar's GitHub profile (opens in new tab)" style={{ display: 'block', height: '100%' }}>
         <div
           ref={divRef}
           onMouseEnter={() => {
@@ -370,7 +371,7 @@ function ProjectModal({ project, onClose, onOpenReport }) {
             </div>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               {project.github && (
-                <a href={project.github} target="_blank" rel="noopener noreferrer" className="btn-outline">
+                <a href={project.github} target="_blank" rel="noopener noreferrer" aria-label={`View ${project.title} source on GitHub (opens in new tab)`} className="btn-outline">
                   ⌥ View GitHub
                 </a>
               )}
@@ -380,7 +381,7 @@ function ProjectModal({ project, onClose, onOpenReport }) {
                 </button>
               )}
               {project.demo && (
-                <a href={project.demo} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                <a href={project.demo} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.title} live demo (opens in new tab)`} className="btn-primary">
                   🌐 Live Demo
                 </a>
               )}

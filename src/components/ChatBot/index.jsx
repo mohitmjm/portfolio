@@ -9,9 +9,7 @@ const QUICK_REPLIES = [
   { text: '✨ HR Portal AI Features', isHighlight: true },
   { text: '✨ Voice Assistant & Attrition', isHighlight: true },
   { text: '👥 Resume AI Analyzer', isHighlight: false },
-  { text: '👁️ Drowsiness Detector', isHighlight: false },
-  { text: '🤖 About AntiGravity', isHighlight: false }
-];
+  { text: '👁️ Drowsiness Detector', isHighlight: false },];
 
 const parseLinks = (text) => {
   if (!text) return '';
@@ -31,6 +29,7 @@ const parseLinks = (text) => {
             href={url} 
             target="_blank" 
             rel="noopener noreferrer" 
+            aria-label={`${url} (opens in new tab)`}
             style={{ color: '#06b6d4', textDecoration: 'underline', fontWeight: 600 }}
           >
             {url}
