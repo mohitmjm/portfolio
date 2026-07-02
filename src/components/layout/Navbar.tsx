@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Download, Menu, X, Terminal } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
+import { SoundToggle } from "./SoundToggle";
 import { siteConfig } from "@/data/siteConfig";
 import { cn } from "@/lib/utils";
 
@@ -90,6 +91,7 @@ export function Navbar() {
             >
               <Download className="h-3.5 w-3.5" /> RESUME
             </a>
+            <SoundToggle />
             <ThemeToggle />
             <button
               className="lg:hidden hud-panel h-10 w-10 grid place-items-center"

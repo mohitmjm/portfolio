@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/lib/theme";
 import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
+import { SoundEffects } from "@/components/layout/SoundEffects";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
@@ -24,6 +25,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <TooltipProvider>
+        <SoundEffects />
         <Toaster />
         <Sonner />
         <BrowserRouter>

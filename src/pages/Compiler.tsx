@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { SoundToggle } from "@/components/layout/SoundToggle";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { GlowButton } from "@/components/ui/GlowButton";
 import { HolographicPanel } from "@/components/ui/HolographicPanel";
@@ -210,7 +211,10 @@ const Compiler = () => {
               />
               PYTHON STUDIO {version && `- v${version}`}
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <SoundToggle />
+              <ThemeToggle />
+            </div>
           </div>
         </header>
 
