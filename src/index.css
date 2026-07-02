@@ -1,0 +1,259 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   Mohit Mohatkar — Cinematic 3D Portfolio OS
+   Design tokens: HSL only. Dark = Cyber Command Center.
+   Light = Clean Futuristic AI Lab.
+   ========================================================= */
+
+@layer base {
+  :root {
+    /* Light — Futuristic AI Lab */
+    --background: 220 30% 98%;
+    --foreground: 222 47% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 10%;
+
+    --primary: 210 90% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 30% 94%;
+    --secondary-foreground: 222 47% 10%;
+
+    --muted: 220 25% 94%;
+    --muted-foreground: 220 15% 40%;
+
+    --accent: 265 85% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 20% 88%;
+    --input: 220 20% 88%;
+    --ring: 210 90% 48%;
+
+    --radius: 0.9rem;
+
+    /* Brand — cinematic accents */
+    --cyan: 188 95% 50%;
+    --violet: 265 85% 62%;
+    --electric: 220 100% 60%;
+    --signal: 158 75% 45%;
+    --amber-hud: 38 95% 55%;
+
+    --hud-surface: 220 40% 100%;
+    --hud-border: 210 60% 70%;
+    --hud-glow: 210 100% 60%;
+
+    --grid: 210 40% 88%;
+
+    --gradient-core: radial-gradient(circle at 50% 50%, hsl(var(--cyan) / 0.55), hsl(var(--violet) / 0.25) 40%, transparent 70%);
+    --gradient-panel: linear-gradient(135deg, hsl(var(--hud-surface) / 0.85), hsl(220 40% 96% / 0.6));
+    --gradient-hero: radial-gradient(ellipse at 50% 30%, hsl(var(--cyan) / 0.18), transparent 60%),
+                     radial-gradient(ellipse at 80% 80%, hsl(var(--violet) / 0.15), transparent 60%);
+    --gradient-text: linear-gradient(135deg, hsl(var(--electric)), hsl(var(--violet)) 60%, hsl(var(--cyan)));
+
+    --shadow-hud: 0 1px 0 hsl(var(--hud-border) / 0.4) inset, 0 20px 60px -20px hsl(var(--electric) / 0.25);
+    --shadow-glow: 0 0 40px hsl(var(--cyan) / 0.35);
+    --shadow-elevated: 0 30px 80px -30px hsl(220 60% 30% / 0.25);
+
+    --sidebar-background: 220 30% 98%;
+    --sidebar-foreground: 222 47% 10%;
+    --sidebar-primary: 210 90% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 25% 94%;
+    --sidebar-accent-foreground: 222 47% 10%;
+    --sidebar-border: 220 20% 88%;
+    --sidebar-ring: 210 90% 48%;
+  }
+
+  .dark {
+    /* Dark — Cyber Command Center */
+    --background: 222 45% 4%;
+    --foreground: 210 40% 96%;
+
+    --card: 222 42% 7%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 222 45% 5%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 188 95% 55%;
+    --primary-foreground: 222 45% 4%;
+
+    --secondary: 222 35% 12%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 222 30% 14%;
+    --muted-foreground: 215 20% 68%;
+
+    --accent: 265 85% 68%;
+    --accent-foreground: 222 45% 4%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 210 40% 96%;
+
+    --border: 222 40% 16%;
+    --input: 222 40% 16%;
+    --ring: 188 95% 55%;
+
+    --cyan: 188 95% 58%;
+    --violet: 265 90% 70%;
+    --electric: 218 100% 65%;
+    --signal: 158 75% 55%;
+    --amber-hud: 38 95% 60%;
+
+    --hud-surface: 222 45% 8%;
+    --hud-border: 188 80% 55%;
+    --hud-glow: 188 95% 55%;
+
+    --grid: 222 60% 14%;
+
+    --gradient-core: radial-gradient(circle at 50% 50%, hsl(var(--cyan) / 0.8), hsl(var(--violet) / 0.45) 40%, transparent 70%);
+    --gradient-panel: linear-gradient(135deg, hsl(222 50% 10% / 0.85), hsl(222 45% 6% / 0.65));
+    --gradient-hero: radial-gradient(ellipse at 50% 30%, hsl(var(--cyan) / 0.22), transparent 60%),
+                     radial-gradient(ellipse at 80% 80%, hsl(var(--violet) / 0.20), transparent 60%);
+    --gradient-text: linear-gradient(135deg, hsl(var(--cyan)), hsl(var(--electric)) 50%, hsl(var(--violet)));
+
+    --shadow-hud: 0 1px 0 hsl(var(--hud-border) / 0.35) inset, 0 25px 80px -25px hsl(var(--cyan) / 0.35);
+    --shadow-glow: 0 0 60px hsl(var(--cyan) / 0.4);
+    --shadow-elevated: 0 30px 80px -30px hsl(0 0% 0% / 0.6);
+
+    --sidebar-background: 222 45% 5%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 188 95% 55%;
+    --sidebar-primary-foreground: 222 45% 4%;
+    --sidebar-accent: 222 35% 12%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 222 40% 16%;
+    --sidebar-ring: 188 95% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+  html {
+    overflow-x: clip;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+    overflow-x: clip;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+  .font-hud {
+    font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+    letter-spacing: 0.08em;
+  }
+  .font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  ::selection {
+    background: hsl(var(--cyan) / 0.4);
+    color: hsl(var(--foreground));
+  }
+}
+
+@layer components {
+  .hud-panel {
+    background: var(--gradient-panel);
+    border: 1px solid hsl(var(--hud-border) / 0.35);
+    box-shadow: var(--shadow-hud);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-radius: var(--radius);
+  }
+  .hud-panel-strong {
+    background: var(--gradient-panel);
+    border: 1px solid hsl(var(--hud-border) / 0.55);
+    box-shadow: var(--shadow-hud), var(--shadow-glow);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border-radius: var(--radius);
+  }
+  .text-gradient {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .cyber-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--grid) / 0.35) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--grid) / 0.35) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  }
+  .glow-ring {
+    box-shadow: 0 0 0 1px hsl(var(--cyan) / 0.4), 0 0 30px -5px hsl(var(--cyan) / 0.5);
+  }
+  .scanline::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      hsl(var(--foreground) / 0.03) 2px,
+      hsl(var(--foreground) / 0.03) 3px
+    );
+    border-radius: inherit;
+  }
+}
+
+@layer utilities {
+  .tilt-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+  .anim-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 30px -5px hsl(var(--cyan) / 0.4); }
+    50% { box-shadow: 0 0 60px 0 hsl(var(--cyan) / 0.7); }
+  }
+  .anim-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .anim-fade-up {
+    animation: fade-up 0.6s ease-out both;
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

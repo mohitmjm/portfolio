@@ -8,7 +8,7 @@
   status = 200
 
 # Cross-origin isolation so the Python compiler can use SharedArrayBuffer
-# (interactive stdin). credentialless keeps CDN assets loading.
+# (interactive stdin). "credentialless" keeps CDN assets loading.
 [[headers]]
   for = "/*"
   [headers.values]
