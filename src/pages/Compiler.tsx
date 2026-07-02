@@ -2,23 +2,38 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import {
-  ArrowLeft, Play, Trash2, Copy, Download, Loader2, Zap, Sparkles, BookOpen,
-  RefreshCw, Cpu, Clock, HardDrive, AlertTriangle,
+  AlertTriangle,
+  ArrowLeft,
+  BookOpen,
+  Clock,
+  Copy,
+  Cpu,
+  Download,
+  HardDrive,
+  Loader2,
+  Play,
+  RefreshCw,
+  Sparkles,
+  Trash2,
+  Zap,
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { HolographicPanel } from "@/components/ui/HolographicPanel";
-import { GlowButton } from "@/components/ui/GlowButton";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-
-import CodeEditor from "@/features/compiler/CodeEditor";
+import { GlowButton } from "@/components/ui/GlowButton";
+import { HolographicPanel } from "@/components/ui/HolographicPanel";
 import AIPanel, { type AIState } from "@/features/compiler/AIPanel";
-import { usePythonRunner } from "@/features/compiler/usePythonRunner";
+import CodeEditor from "@/features/compiler/CodeEditor";
 import {
-  aiAvailable, analyzeError, improveCode, learnFromError,
-  type AnalyzeResult, type ImproveResult,
+  aiAvailable,
+  analyzeError,
+  improveCode,
+  learnFromError,
+  type AnalyzeResult,
+  type ImproveResult,
 } from "@/features/compiler/aiClient";
 import { DEFAULT_CODE, formatBytes, formatTime } from "@/features/compiler/constants";
+import { usePythonRunner } from "@/features/compiler/usePythonRunner";
 import { cn } from "@/lib/utils";
 
 function parseLine(error: string | null): number | null {
@@ -32,15 +47,24 @@ function parseLine(error: string | null): number | null {
 const Compiler = () => {
   const [code, setCode] = useState<string>(DEFAULT_CODE);
   const [lastRun, setLastRun] = useState<{ ok: boolean | null; time: number | null; memory: number | null }>({
-    ok: null, time: null, memory: null,
+    ok: null,
+    time: null,
+    memory: null,
   });
   const [ai, setAi] = useState<AIState>({ status: "idle" });
   const [showAI, setShowAI] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
   const {
-    status, version, lines, awaitingInput, inputSupported,
-    run, provideInput, clear, reboot,
+    status,
+    version,
+    lines,
+    awaitingInput,
+    inputSupported,
+    run,
+    provideInput,
+    clear,
+    reboot,
   } = usePythonRunner();
 
   const outRef = useRef<HTMLDivElement>(null);
@@ -69,7 +93,9 @@ const Compiler = () => {
     const blob = new Blob([code], { type: "text/x-python" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = "mohit_script.py"; a.click();
+    a.href = url;
+    a.download = "mohit_script.py";
+    a.click();
     URL.revokeObjectURL(url);
   }, [code]);
 
@@ -158,53 +184,65 @@ const Compiler = () => {
   return (
     <>
       <Helmet>
-        <title>Python Compiler — In-browser Studio | Mohit Mohatkar</title>
-        <meta name="description" content="Run Python directly in your browser with Pyodide. Interactive stdin, AI error analysis, and a Monaco editor — powered by the same engine as the original portfolio." />
+        <title>Python Compiler - In-browser Studio | Mohit Mohatkar</title>
+        <meta
+          name="description"
+          content="Run Python directly in your browser with Pyodide. Interactive stdin, AI error analysis, and a Monaco editor."
+        />
         <link rel="canonical" href="https://mohitmohatkar.in/compiler" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background">
-        {/* Header */}
         <header className="border-b border-border/60 py-3">
           <div className="container flex items-center justify-between gap-3">
             <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-4 w-4" /> Back to Portfolio
             </Link>
             <div className="flex items-center gap-2 font-hud text-[10px] tracking-widest text-cyan">
-              <span className={cn(
-                "h-2 w-2 rounded-full",
-                status === "ready" && "bg-emerald-400 shadow-[0_0_8px_hsl(var(--cyan))]",
-                status === "running" && "bg-amber-400 animate-pulse",
-                status === "loading" && "bg-cyan animate-pulse",
-                status === "error" && "bg-red-500",
-              )} />
-              PYTHON STUDIO {version && `· v${version}`}
+              <span
+                className={cn(
+                  "h-2 w-2 rounded-full",
+                  status === "ready" && "bg-emerald-400 shadow-[0_0_8px_hsl(var(--cyan))]",
+                  status === "running" && "bg-amber-400 animate-pulse",
+                  status === "loading" && "bg-cyan animate-pulse",
+                  status === "error" && "bg-red-500",
+                )}
+              />
+              PYTHON STUDIO {version && `- v${version}`}
             </div>
             <ThemeToggle />
           </div>
         </header>
 
-        <main className="flex-1 container py-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
-          {/* Editor + Output column */}
-          <div className="flex flex-col gap-4 min-w-0">
-            {/* Editor */}
-            <HolographicPanel className="p-0 overflow-hidden">
+        <main className="flex-1 container py-4 flex flex-col gap-4">
+          <section className="grid gap-4 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.85fr)] xl:items-stretch">
+            <HolographicPanel className="p-0 overflow-hidden min-h-[430px] flex flex-col">
               <div className="flex items-center justify-between px-3 py-2 border-b border-border">
                 <div className="font-hud text-[10px] tracking-widest text-cyan">SCRIPT.PY</div>
                 <div className="flex items-center gap-1">
-                  <button onClick={copyCode} className="h-8 w-8 grid place-items-center rounded-md hover:bg-secondary" aria-label="Copy"><Copy className="h-3.5 w-3.5" /></button>
-                  <button onClick={download} className="h-8 w-8 grid place-items-center rounded-md hover:bg-secondary" aria-label="Download"><Download className="h-3.5 w-3.5" /></button>
-                  <button onClick={() => setCode("")} className="h-8 w-8 grid place-items-center rounded-md hover:bg-secondary" aria-label="Clear"><Trash2 className="h-3.5 w-3.5" /></button>
-                  <button onClick={reboot} className="h-8 w-8 grid place-items-center rounded-md hover:bg-secondary" aria-label="Reboot runtime"><RefreshCw className="h-3.5 w-3.5" /></button>
+                  <button onClick={copyCode} className="h-8 w-8 grid place-items-center rounded-md hover:bg-secondary" aria-label="Copy">
+                    <Copy className="h-3.5 w-3.5" />
+                  </button>
+                  <button onClick={download} className="h-8 w-8 grid place-items-center rounded-md hover:bg-secondary" aria-label="Download">
+                    <Download className="h-3.5 w-3.5" />
+                  </button>
+                  <button onClick={() => setCode("")} className="h-8 w-8 grid place-items-center rounded-md hover:bg-secondary" aria-label="Clear">
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                  <button onClick={reboot} className="h-8 w-8 grid place-items-center rounded-md hover:bg-secondary" aria-label="Reboot runtime">
+                    <RefreshCw className="h-3.5 w-3.5" />
+                  </button>
                 </div>
               </div>
-              <div className="h-[52vh]">
+
+              <div className="min-h-[300px] h-[46vh] xl:h-[calc(100vh-27rem)]">
                 <CodeEditor value={code} onChange={setCode} onRun={handleRun} onSave={download} />
               </div>
-              <div className="p-2 border-t border-border flex items-center gap-2">
+
+              <div className="p-2 border-t border-border flex flex-wrap items-center gap-2">
                 <GlowButton onClick={handleRun} disabled={!ready || running} className="min-w-[180px]">
                   {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
-                  {status === "loading" ? "BOOTING PYODIDE..." : running ? "RUNNING..." : "RUN (⌘/CTRL+ENTER)"}
+                  {status === "loading" ? "BOOTING PYODIDE..." : running ? "RUNNING..." : "RUN (CTRL+ENTER)"}
                 </GlowButton>
                 <button
                   onClick={runAnalyze}
@@ -229,29 +267,36 @@ const Compiler = () => {
                   <BookOpen className="h-3.5 w-3.5" /> LEARN
                 </button>
               </div>
+
               {!aiEnabled && (
                 <div className="px-3 pb-2 text-[10px] text-muted-foreground">
-                  AI actions disabled — no <code>VITE_GEMINI_API_KEY</code> / <code>VITE_GROQ_API_KEY</code> configured.
+                  AI actions disabled: no <code>VITE_GEMINI_API_KEY</code> / <code>VITE_GROQ_API_KEY</code> configured.
                 </div>
               )}
             </HolographicPanel>
 
-            {/* Output */}
-            <HolographicPanel className="p-0 overflow-hidden">
-              <div className="flex items-center justify-between px-3 py-2 border-b border-border">
-                <div className="flex items-center gap-3 font-hud text-[10px] tracking-widest">
+            <HolographicPanel className="p-0 overflow-hidden min-h-[430px] flex flex-col">
+              <div className="flex items-center justify-between gap-3 px-3 py-2 border-b border-border">
+                <div className="flex flex-wrap items-center gap-3 font-hud text-[10px] tracking-widest">
                   <span className="text-signal">OUTPUT</span>
-                  <span className="flex items-center gap-1 text-muted-foreground"><Clock className="h-3 w-3" /> {formatTime(lastRun.time)} ms</span>
-                  <span className="flex items-center gap-1 text-muted-foreground"><HardDrive className="h-3 w-3" /> {formatBytes(lastRun.memory)} KB</span>
-                  <span className="flex items-center gap-1 text-muted-foreground"><Cpu className="h-3 w-3" /> {status.toUpperCase()}</span>
+                  <span className="flex items-center gap-1 text-muted-foreground">
+                    <Clock className="h-3 w-3" /> {formatTime(lastRun.time)} ms
+                  </span>
+                  <span className="flex items-center gap-1 text-muted-foreground">
+                    <HardDrive className="h-3 w-3" /> {formatBytes(lastRun.memory)} KB
+                  </span>
+                  <span className="flex items-center gap-1 text-muted-foreground">
+                    <Cpu className="h-3 w-3" /> {status.toUpperCase()}
+                  </span>
                 </div>
                 <button onClick={clear} className="h-8 w-8 grid place-items-center rounded-md hover:bg-secondary" aria-label="Clear output">
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
-              <div ref={outRef} className="h-[28vh] p-3 bg-background/50 font-mono text-sm overflow-auto">
+
+              <div ref={outRef} className="flex-1 min-h-[300px] p-3 bg-background/50 font-mono text-sm overflow-auto">
                 {lines.length === 0 && !awaitingInput ? (
-                  <span className="text-muted-foreground">// Output will appear here…</span>
+                  <span className="text-muted-foreground">// Output will appear here...</span>
                 ) : (
                   <>
                     {lines.map((l, i) => (
@@ -282,42 +327,50 @@ const Compiler = () => {
                   </>
                 )}
               </div>
+
               {!inputSupported && (
                 <div className="px-3 py-1.5 border-t border-border text-[10px] text-amber-400/80">
-                  ⚠ Interactive input() disabled: page not cross-origin-isolated (needs COOP/COEP headers on deployment).
+                  Interactive input() disabled: page is not cross-origin-isolated.
                 </div>
               )}
             </HolographicPanel>
-          </div>
+          </section>
 
-          {/* AI Mentor column */}
-          <aside className="min-w-0">
-            <HolographicPanel className="p-0 overflow-hidden h-full min-h-[60vh] flex flex-col">
-              {showAI && ai.status !== "idle" ? (
+          <HolographicPanel className="p-0 overflow-hidden min-h-[150px]">
+            {showAI && ai.status !== "idle" ? (
+              <div className="max-h-[420px] overflow-auto">
                 <AIPanel
                   ai={ai}
                   onApply={applyFromAi}
                   onLearn={runLearn}
-                  onClose={() => { setShowAI(false); setAi({ status: "idle" }); }}
+                  onClose={() => {
+                    setShowAI(false);
+                    setAi({ status: "idle" });
+                  }}
                 />
-              ) : (
-                <div className="p-6 flex flex-col items-center justify-center h-full text-center gap-3">
+              </div>
+            ) : (
+              <div className="p-4 md:p-5 grid gap-4 md:grid-cols-[220px_minmax(0,1fr)_260px] md:items-center">
+                <div className="flex items-center gap-3">
                   <Zap className="h-8 w-8 text-cyan" />
-                  <div className="font-hud text-xs tracking-widest text-cyan">AI MENTOR</div>
-                  <p className="text-sm text-muted-foreground max-w-xs">
-                    Run your code. If it errors, click <strong className="text-red-300">ANALYZE</strong> for a plain-English fix,
-                    <strong className="text-violet-300"> IMPROVE</strong> for a code review, or
-                    <strong className="text-cyan"> LEARN</strong> to turn the mistake into a lesson.
-                  </p>
-                  <div className="text-[10px] font-mono text-muted-foreground pt-4 space-y-1">
-                    <div>⌘/Ctrl+Enter — run</div>
-                    <div>⌘/Ctrl+S — download</div>
-                    <div>⌘/Ctrl+D — duplicate line</div>
+                  <div>
+                    <div className="font-hud text-xs tracking-widest text-cyan">AI MENTOR</div>
+                    <div className="text-xs text-muted-foreground">Analyze, improve, learn.</div>
                   </div>
                 </div>
-              )}
-            </HolographicPanel>
-          </aside>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Run your code. If it errors, use <strong className="text-red-300">ANALYZE</strong> for a plain-English fix,
+                  <strong className="text-violet-300"> IMPROVE</strong> for a code review, or
+                  <strong className="text-cyan"> LEARN</strong> to turn the mistake into a lesson.
+                </p>
+                <div className="text-[10px] font-mono text-muted-foreground space-y-1 md:text-right">
+                  <div>Ctrl+Enter - run</div>
+                  <div>Ctrl+S - download</div>
+                  <div>Ctrl+D - duplicate line</div>
+                </div>
+              </div>
+            )}
+          </HolographicPanel>
         </main>
       </div>
     </>
