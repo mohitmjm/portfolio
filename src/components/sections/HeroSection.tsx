@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Download, MessageSquare, Terminal } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowRight, Download, MessageSquare } from "lucide-react";
 import { siteConfig } from "@/data/siteConfig";
 import { GlowButton } from "@/components/ui/GlowButton";
 
@@ -25,29 +24,20 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="hero-content max-w-[56rem] pr-0 lg:pr-12"
+          className="hero-content max-w-[46rem] pr-0 lg:pr-12"
         >
-          <div className="hud-panel inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-hud tracking-widest">
-            <span className="h-2 w-2 rounded-full bg-signal animate-pulse" />
-            SYSTEM ONLINE — OPEN TO OPPORTUNITIES
-          </div>
-
-          <p className="mt-12 text-4xl md:text-5xl lg:text-[56px] xl:text-[64px] font-semibold leading-[1.05] text-foreground/95">
-            Hey, I'm Mohit
-          </p>
-
-          <h1 className="mt-4 text-2xl sm:text-3xl md:text-4xl lg:text-[44px] xl:text-[52px] font-semibold leading-[1.12] tracking-tight text-foreground">
-            Building intelligent, secure, and automated products for the{" "}
-            <span className="text-gradient drop-shadow-[0_2px_30px_hsl(var(--cyan)/0.35)]">
-              next digital era.
+          <h1 className="text-5xl sm:text-6xl lg:text-[72px] xl:text-[84px] font-semibold leading-[0.98] tracking-tight text-foreground">
+            Hey, I'm{" "}
+            <span className="text-cyan drop-shadow-[0_0_28px_hsl(var(--cyan)/0.45)]">
+              Mohit
             </span>
           </h1>
 
-          <p className="mt-7 text-lg md:text-xl lg:text-[22px] text-muted-foreground max-w-[52rem] leading-relaxed">
-            A developer focused on AI automation, RAG security testing, full-stack products, and futuristic digital systems.
+          <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-[34rem] leading-relaxed">
+            AI developer, cybersecurity intern, and full-stack builder.
           </p>
 
-          <div className="mt-10 flex flex-wrap lg:flex-nowrap gap-3">
+          <div className="mt-9 flex flex-wrap gap-3">
             <a href="#projects">
               <GlowButton>
                 VIEW PROJECTS <ArrowRight className="h-3.5 w-3.5" />
@@ -58,27 +48,14 @@ export function HeroSection() {
                 <Download className="h-3.5 w-3.5" /> DOWNLOAD RESUME
               </GlowButton>
             </a>
-            <Link to="/compiler">
-              <GlowButton variant="outline">
-                <Terminal className="h-3.5 w-3.5" /> PYTHON COMPILER
-              </GlowButton>
-            </Link>
             <a href="#contact">
               <GlowButton variant="outline">
-                <MessageSquare className="h-3.5 w-3.5" /> START A CONVERSATION
+                <MessageSquare className="h-3.5 w-3.5" /> CONTACT ME
               </GlowButton>
             </a>
-          </div>
-
-          <div className="mt-10 flex items-center gap-3 text-[10px] font-hud tracking-[0.3em] text-muted-foreground">
-            <span className="h-px w-16 bg-cyan/50" />
-            SCROLL TO ENGAGE
-            <span className="h-px w-16 bg-cyan/50" />
           </div>
         </motion.div>
       </div>
     </section>
   );
 }
-
-
