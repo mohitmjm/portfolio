@@ -25,10 +25,25 @@ export function AboutSection() {
         <div className="grid lg:grid-cols-3 gap-6">
           <HolographicPanel strong className="lg:col-span-1">
             <div className="flex flex-col gap-4">
-              <div className="aspect-square rounded-lg overflow-hidden bg-secondary/60 border border-border relative flex items-center justify-center p-6">
-                <div className="text-center">
-                  <div className="text-5xl font-bold tracking-tight text-gradient mb-2">{siteConfig.name.split(' ')[0]}</div>
-                  <div className="text-xs font-mono text-muted-foreground">PHOTO COMING SOON</div>
+              <div className="aspect-[4/5] rounded-lg overflow-hidden bg-secondary/60 border border-cyan/25 relative">
+                <img
+                  src={siteConfig.profileImage}
+                  alt="Mohit Mohatkar futuristic AI portrait"
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover object-[center_top]"
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(2,6,23,0.02) 0%, rgba(2,6,23,0.02) 45%, rgba(2,6,23,0.76) 100%)",
+                  }}
+                />
+                <div className="absolute inset-x-0 bottom-0 z-10 p-4">
+                  <div className="font-hud text-[10px] tracking-[0.28em] text-cyan">AI PROFILE</div>
+                  <div className="mt-1 text-sm font-semibold text-white">{siteConfig.name}</div>
                 </div>
                 <div className="absolute inset-0 pointer-events-none scanline" />
               </div>

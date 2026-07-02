@@ -8,7 +8,7 @@ export const siteConfig = {
   email: "mohitjmohatkar@gmail.com",
   collegeEmail: "mohatkarmj@rknec.edu",
   domain: "https://mohitmohatkar.in/",
-  profileImage: "/assets/profile.png",
+  profileImage: "/assets/mohit-ai-portrait.png",
   resume: "/assets/resume_Mohit.pdf",
   resumeDownloadName: "Mohit_Mohatkar_Resume.pdf",
   formspree: "https://formspree.io/f/xwpbjrdn",

@@ -1,4 +1,4 @@
-const profileImg = "/images/mohit-ai-profile.png";
+import { siteConfig } from "@/data/siteConfig";
 
 const TAGS = ["AI Automation", "RAG Security", "Full-Stack"];
 
@@ -28,7 +28,7 @@ export function ProfileHologramCard() {
 
         {/* Portrait image */}
         <img
-          src={profileImg}
+          src={siteConfig.profileImage}
           alt="Mohit Mohatkar professional AI profile portrait"
           fetchPriority="high"
           decoding="async"
